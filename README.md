@@ -9,7 +9,7 @@ Winter semester 2023/24 [@pbiecek](https://github.com/pbiecek) [@hbaniecki](http
 
 Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays. 
 
-* 2023-10-06  --  Introduction	
+* 2023-10-06  --  Introduction	[Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/01_introduction.html)
 * 2023-10-13  --  SHAP and friends	
 * 2023-10-20  --  LIME and friends	
 * 2023-10-27  --  PDP and friends		
