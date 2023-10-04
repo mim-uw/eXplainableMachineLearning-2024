@@ -9,7 +9,6 @@ Winter semester 2023/24 [@pbiecek](https://github.com/pbiecek) [@hbaniecki](http
 
 Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays. 
 
-
 * 2023-10-06  --  Introduction	
 * 2023-10-13  --  SHAP and friends	
 * 2023-10-20  --  LIME and friends	
@@ -27,7 +26,14 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 
 ## How to get a good grade
 
-From different activities, you can get from 0 to 100 points. 51 points are needed to pass this course.
+The final grade is based on activity in four areas:
+
+* mandatory: Project (0-35)
+* mandatory: Exam  (0-35)
+* optional: Homeworks (0-24)
+* optional: Presentation (0-6)
+
+In total you can get from 0 to 100 points. 51 points are needed to pass this course.
 
 Grades:
 
@@ -37,13 +43,14 @@ Grades:
 * 81-90: (4.5) db+
 * 91-100: (5) bdb
 
+## Homeworks (24 points)
 
-There are four key components:
-
-* Homeworks (0-24)
-* Presentations (0-10)
-* Project (0-36)
-* Exam  (0-30)
+ - [Homework 1](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW1)  for 0-4 points. **Deadline: 2023-10-12**
+ - [Homework 2](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW2)  for 0-4 points. **Deadline: 2023-10-19** 
+ - [Homework 3](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW3)  for 0-4 points. **Deadline: 2023-10-26**
+ - [Homework 4](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW4)  for 0-4 points. **Deadline: 2023-11-09**
+ - [Homework 5](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW5)  for 0-4 points. **Deadline: 2023-11-16**
+ - [Homework 6](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW6)  for 0-4 points. **Deadline: 2023-12-23**
 
 
 ## Literature
