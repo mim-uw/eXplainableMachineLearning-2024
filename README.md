@@ -50,7 +50,7 @@ Grades:
  - [Homework 3](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW3)  for 0-4 points. **Deadline: 2023-10-26**
  - [Homework 4](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW4)  for 0-4 points. **Deadline: 2023-11-09**
  - [Homework 5](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW5)  for 0-4 points. **Deadline: 2023-11-16**
- - [Homework 6](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW6)  for 0-4 points. **Deadline: 2023-12-23**
+ - [Homework 6](https://github.com/mim-uw/TrustworthyMachineLearning-2024/tree/main/Homeworks/HW6)  for 0-4 points. **Deadline: 2023-11-23**
 
 
 ## Literature
