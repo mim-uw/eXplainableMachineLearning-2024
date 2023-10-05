@@ -88,7 +88,7 @@ Examples of directions to look for vulnerability (creativity will be appreciated
 - model malfunction due to an unintendent use
 - wrong behaviour on out-of-distribution samples
 
-The final report will be a short (up to 4 pages) paper in the JMLR template
+The final report will be a short (up to 4 pages) paper in the JMLR template. See [an example](https://github.com/mim-uw/eXplainableMachineLearning-2023/blob/main/Projects/PawelPawlik_MichalSiennicki_AlicjaZiarko/checkpoint3/report.pdf).
 
 
 ## Literature
