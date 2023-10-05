@@ -377,15 +377,15 @@ Przemysław Biecek
 <p>This year Github: <a href="https://github.com/mim-uw/eXplainableMachineLearning-2024/blob/main/README.md">https://github.com/mim-uw/eXplainableMachineLearning-2024/</a></p>
 <p>The classes are divided into:</p>
 <ul>
-<li>7 lecture blocks, where we will discuss various XAI and fairnes techniques, but this is only an outline of a very rich and interesting field</li>
-<li>2 blocks with student presentations, the place where we will learn about selected new XAI techniques</li>
+<li>8+ lecture blocks (with a special guest), where we will discuss various XAI and fairness techniques, but this is only an outline of a very rich and interesting field</li>
+<li>2 blocks with student presentations, here we will explore some recent XAI techniques</li>
 <li>6 homeworks, they are related to the application of a selected XAI technique on a selected predictive problem</li>
 <li>a written exam, where there will be tasks similar to those we will discuss during homework</li>
 <li>we will mainly work on tabular data, although many of presented methods translate to problems in the area of computer vision, NLP, etc.</li>
 </ul>
 <p>Lecture/exercises/lab</p>
 <ul>
-<li>Lecture hours are intended for the theory behind explanations but also project presentations (shared by both groups)</li>
+<li>Lectures are focused on the theory behind explanations and presentations of projects (shared by both groups)</li>
 <li>Exercises are for discussions about homeworks and projects</li>
 </ul>
 </section>
@@ -412,9 +412,9 @@ Przemysław Biecek
 <h2>Teaching materials</h2>
 <div class="columns">
 <div class="column" style="width:67%;">
-<p><strong>Literature extending our lectures</strong></p>
+<p>This course is based on “Explanatory Model Analysis” <a href="https://ema.drwhy.ai/">https://ema.drwhy.ai/</a></p>
+<p><strong>Other sources that extend lectures</strong></p>
 <ul>
-<li>Explanatory Model Analysis <a href="https://ema.drwhy.ai/">https://ema.drwhy.ai/</a></li>
 <li>Fairness and machine learning <a href="https://fairmlbook.org/">https://fairmlbook.org/</a></li>
 <li>An Introduction to Machine Learning Interpretability <a href="https://www.oreilly.com/library/view/an-introduction-to/9781492033158/">https://www.oreilly.com/library/view/an-introduction-to/9781492033158/</a></li>
 <li>Interpretable Machine Learning. A Guide for Making Black Box Models Explainable <a href="https://christophm.github.io/interpretable-ml-book/">https://christophm.github.io/interpretable-ml-book/</a></li>
@@ -427,7 +427,7 @@ Przemysław Biecek
 </section>
 <section id="grades" class="slide level2">
 <h2>Grades</h2>
-<p>From different activities, you can get from 0 to 100 points.</p>
+<p>From different activities, you can get from 0 to 100(*) points.</p>
 <p>51 points are needed to pass this course.</p>
 <p>There are four key components.</p>
 <ul>
@@ -436,13 +436,14 @@ Przemysław Biecek
 <li>Homeworks</li>
 <li>Presentation</li>
 </ul>
-<p>See here: https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main</p>
+<p>Detailed rules are presented here: <a href="https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main">https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main</a></p>
+<p>(*) in fact one can get more, <code>5!</code> is waiting</p>
 </section>
 <section id="the-first-homework" class="slide level2">
 <h2>The first homework</h2>
-<p>Read more at: <a href="https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW1">Homeworks/HW1</a></p>
-<p>In future homework, you will explain behaviour of predictive models, but in order to do so, you need to first train a few models.</p>
-<p><strong>Deadline</strong>: 2022-10-12 (next week) We will discuss results during next classes</p>
+<p>Read more at <a href="https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW1">Homeworks/HW1</a></p>
+<p>In future homeworks, you will explain behavior of predictive models, but in order to do so, you need to first train a few models.</p>
+<p><strong>Deadline</strong>: 2022-10-12 (next week) We will discuss results during next exercises</p>
 <div class="cell">
 <style type="text/css">
 .reveal {
@@ -524,9 +525,26 @@ pre {
 <li>at this point we could discuss various examples of spectacular failures of AI for the next two hours</li>
 <li>see ,,Weapons of Math Destruction: How Big Data Increases Inequality and Threatens Democracy’’ by Cathy O’Neil for a very nice overview of these problems (audiobook lasts for over 6 hours)</li>
 </ul>
+</section>
+<section id="however-not-every-model-works-1" class="slide level2">
+<h2>… however, not every model works …</h2>
 <p>Read more at: <a href="https://romanlutz.github.io/ResponsibleAI/">https://romanlutz.github.io/ResponsibleAI/</a></p>
 <p>
 <img src="images/XAI_03.png" width="100%">
+</p>
+</section>
+<section id="however-not-every-model-works-2" class="slide level2">
+<h2>… however, not every model works …</h2>
+<p>Read more at: <a href="https://incidentdatabase.ai/">https://incidentdatabase.ai/</a></p>
+<p>
+<img src="images/XAI_03b.png" width="100%">
+</p>
+</section>
+<section id="and-sometimes-are-used-for-strange-reasons" class="slide level2">
+<h2>… and sometimes are used for strange reasons</h2>
+<p>Read more at: <a href="https://www.slideshare.net/jaypod/digitaltransformation50soundbites/19-Data_is_the_new_oilClive"></a></p>
+<p>
+<img src="images/XAI_04b.png" width="100%">
 </p>
 </section>
 <section id="and-sometimes-it-has-serious-consequences" class="slide level2">
@@ -625,17 +643,6 @@ pre {
 </center>
 <p></p>
 </section>
-<section id="initiatives-to-increase-the-effectiveness-of-ai-applications-are-being-undertaken-by-various-organizations" class="slide level2">
-<h2>Initiatives to increase the effectiveness of AI applications are being undertaken by various organizations</h2>
-<ul>
-<li>Not only business, but also large international organizations are actively working to promote AI solutions that are safe and transparent</li>
-</ul>
-<p>
-</p><center>
-<img src="images/XAI_09.png" width="100%">
-</center>
-<p></p>
-</section>
 <section id="the-right-to-an-explanation-in-europe" class="slide level2">
 <h2>The right to an explanation in Europe</h2>
 <p>From <a href="https://www.privacy-regulation.eu/en/recital-71-GDPR.htm">Recital 71 EU GDPR</a></p>
@@ -643,19 +650,6 @@ pre {
 <p>Such processing includes ‘profiling’ that consists of any form of automated processing of personal data evaluating the personal aspects relating to a natural person, in particular to analyse or predict aspects concerning the data subject’s performance at work, economic situation, health, personal preferences or interests, reliability or behaviour, location or movements, where it produces legal effects concerning him or her or similarly significantly affects him or her.</p>
 <p>However, decision-making based on such processing, including profiling, should be allowed where expressly authorised by Union or Member State law to which the controller is subject, including for fraud and tax-evasion monitoring and prevention purposes conducted in accordance with the regulations, standards and recommendations of Union institutions or national oversight bodies and to ensure the security and reliability of a service provided by the controller, or necessary for the entering or performance of a contract between the data subject and a controller, or when the data subject has given his or her explicit consent.</p>
 <p><strong>In any case, such processing should be subject to suitable safeguards, which should include specific information to the data subject and the right to obtain human intervention, to express his or her point of view, to obtain an explanation of the decision reached after such assessment and to challenge the decision</strong>.’’</p>
-</section>
-<section id="the-right-to-an-explanation-in-poland" class="slide level2">
-<h2>The right to an explanation in Poland</h2>
-<ul>
-<li>Interestingly, the right of explanation has also been present in Polish law for at least three years.</li>
-<li>Financial institutions still have not developed good solutions.</li>
-<li>However, the topic of explainability as a consumer right is there, and we see an growing demand for solutions that will realize this need for explainability.</li>
-</ul>
-<p>
-</p><center>
-<img src="images/XAI_08.png" width="100%">
-</center>
-<p></p>
 </section></section>
 <section>
 <section id="model-explanations-what-we-will-talk-about" class="title-slide slide level1 center">

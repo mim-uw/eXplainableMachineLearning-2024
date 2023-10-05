@@ -54,15 +54,15 @@ This year Github: [https://github.com/mim-uw/eXplainableMachineLearning-2024/](h
 
 The classes are divided into:
 
-- 7 lecture blocks, where we will discuss various XAI and fairnes techniques, but this is only an outline of a very rich and interesting field
-- 2 blocks with student presentations, the place where we will learn about selected new XAI techniques 
+- 8+ lecture blocks (with a special guest), where we will discuss various XAI and fairness techniques, but this is only an outline of a very rich and interesting field
+- 2 blocks with student presentations, here we will explore some recent XAI techniques 
 - 6 homeworks, they are related to the application of a selected XAI technique on a selected predictive problem
 - a written exam, where there will be tasks similar to those we will discuss during homework
 - we will mainly work on tabular data, although many of presented methods translate to problems in the area of computer vision, NLP, etc.
 
 Lecture/exercises/lab
 
-- Lecture hours are intended for the theory behind explanations but also project presentations (shared by both groups) 
+- Lectures are focused on the theory behind explanations and presentations of projects (shared by both groups) 
 - Exercises are for discussions about homeworks and projects
 
 ## The agenda
@@ -87,9 +87,11 @@ Lecture/exercises/lab
 :::: {.columns}
 
 ::: {.column width="67%"}
-**Literature extending our lectures**
 
-- Explanatory Model Analysis [https://ema.drwhy.ai/](https://ema.drwhy.ai/)
+This course is based on "Explanatory Model Analysis" [https://ema.drwhy.ai/](https://ema.drwhy.ai/)
+
+**Other sources that extend lectures**
+
 - Fairness and machine learning [https://fairmlbook.org/](https://fairmlbook.org/)
 - An Introduction to Machine Learning Interpretability [https://www.oreilly.com/library/view/an-introduction-to/9781492033158/](https://www.oreilly.com/library/view/an-introduction-to/9781492033158/)
 - Interpretable Machine Learning. A Guide for Making Black Box Models Explainable [https://christophm.github.io/interpretable-ml-book/](https://christophm.github.io/interpretable-ml-book/)
@@ -105,7 +107,7 @@ Lecture/exercises/lab
 
 ## Grades
 
-From different activities, you can get from 0 to 100 points. 
+From different activities, you can get from 0 to 100(*) points. 
 
 51 points are needed to pass this course. 
 
@@ -116,17 +118,18 @@ There are four key components.
 * Homeworks
 * Presentation
 
-See here: https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main
+Detailed rules are presented here: [https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main)
 
+
+(*) in fact one can get more, `5!` is waiting
 
 ## The first homework
 
-Read more at: [Homeworks/HW1](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW1)
+Read more at [Homeworks/HW1](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW1)
 
-In future homework, you will explain behaviour of predictive models, but in order to do so, you need to first train a few models.
+In future homeworks, you will explain behavior of predictive models, but in order to do so, you need to first train a few models.
 
-**Deadline**: 2022-10-12 (next week) We will discuss results during next classes
-
+**Deadline**: 2022-10-12 (next week) We will discuss results during next exercises
 
 
 ```{css, echo=FALSE}
@@ -219,13 +222,28 @@ There is tremendous potential in AI, **but**:
 - at this point we could discuss various examples of spectacular failures of AI for the next two hours
 - see ,,Weapons of Math Destruction: How Big Data Increases Inequality and Threatens Democracy'' by Cathy O'Neil for a very nice overview of these problems (audiobook lasts for over 6 hours)
 
+
+## ... however, not every model works ...
+
 Read more at: [https://romanlutz.github.io/ResponsibleAI/](https://romanlutz.github.io/ResponsibleAI/)
 
 <p><img src="images/XAI_03.png" width="100%"></p>
 
 
-## ... and sometimes it has serious consequences
+## ... however, not every model works ...
 
+Read more at: [https://incidentdatabase.ai/](https://incidentdatabase.ai/)
+
+<p><img src="images/XAI_03b.png" width="100%"></p>
+
+
+## ... and sometimes are used for strange reasons
+
+Read more at: [](https://www.slideshare.net/jaypod/digitaltransformation50soundbites/19-Data_is_the_new_oilClive)
+
+<p><img src="images/XAI_04b.png" width="100%"></p>
+
+## ... and sometimes it has serious consequences
 
 - Many AI failures fall into the category "ridiculous". Whether it's a malfunctioning facial recognition system that takes pictures, or a cleaning robot that can spread some mess all over the room.
 - But AI systems are also increasingly being used for serious applications in the fields of biology, medicine or finance. And here mistakes in operation can give rise to serious consequences.
@@ -305,11 +323,6 @@ Read more: [https://www.darpa.mil/](https://www.darpa.mil/program/explainable-ar
 <p><center><img src="images/XAI_11.png" width="100%"></center></p>
 
 
-## Initiatives to increase the effectiveness of AI applications are being undertaken by various organizations
-
-- Not only business, but also large international organizations are actively working to promote AI solutions that are safe and transparent 
-
-<p><center><img src="images/XAI_09.png" width="100%"></center></p>
 
 ## The right to an explanation in Europe
 
@@ -324,13 +337,6 @@ However, decision-making based on such processing, including profiling, should b
 **In any case, such processing should be subject to suitable safeguards, which should include specific information to the data subject and the right to obtain human intervention, to express his or her point of view, to obtain an explanation of the decision reached after such assessment and to challenge the decision**.''
 
 
-## The right to an explanation in Poland
-
-- Interestingly, the right of explanation has also been present in Polish law for at least three years. 
-- Financial institutions still have not developed good solutions.
-- However, the topic of explainability as a consumer right is there, and we see an growing demand for solutions that will realize this need for explainability.
-
-<p><center><img src="images/XAI_08.png" width="100%"></center></p>
 
 # Model explanations -- What we will talk about
 
