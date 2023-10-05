@@ -63,33 +63,32 @@ This analysis should be carried out for a selected model and the results should 
 - One model can be analysed by multiple groups (but the discovered vulnerabilities must not be repeated)
 - The harder the project, the easier it is to obtain a higher grade.
 
-### Important dates
+### Important dates:
 
 - 2023-11-03 – First checkpoint: Students chose the model, create a plan of work (to be discussed at the classes). Deliverables: 3 min presentation based on one slide.
 - 2023-12-08 – Second checkpoint: Provide initial experimental results. At least one vulnerability should have been found by now.
 - 2023-01-26 - Final checkpoint: Presentation of all identified  vulnerabilities
 
-
 ### Models:
 
 RedTeaming analysis should be carried out for a selected model. Depending on the difficulty of the model, you may receive more or less points
 
-- the analysis concerns your own model (e.g. from homework). Point conversion rate: x0.8
-- the analysis applies to a model from Hugging Face (one of the models available there for any modality. Points conversion factor: x1
-- analysis applies to one of the popular foundation models (like tabPFN, segment anything, llama 2). Points conversion factor: x1.25
+- the analysis concerns your own model (e.g. from homework). Point conversion rate: **x0.8**
+- the analysis applies to a model from Hugging Face (one of the models available there for any modality). Points conversion factor: **x1**
+- the analysis applies to one of the popular foundation models (e.g. TabPFN https://arxiv.org/abs/2207.01848, Segment Anything https://arxiv.org/abs/2304.02643, Llama 2 https://arxiv.org/abs/2307.09288, RETFound https://www.nature.com/articles/s41586-023-06555-x). Points conversion factor: **x1.25**
 
 ### RedTeam Report:
 
 Examples of directions to look for vulnerability (creativity will be appreciated)
 
-- bias / fairness. Does the model discriminate against a protected attribute?
-- using XAI to find instance level artifacts (like cleaver hans or wolf), large residuals and explanations why predictions were wrong
-- drift in performance gap between datasets (other image or text data set)
-- model malfunction due to unintendent use
-- unintended memorisation (like https://arxiv.org/pdf/1802.08232.pdf)
-- wrong behaviour for out-of-data samples
+- bias / fairness. Does the model discriminate against a protected attribute? (e.g. https://arxiv.org/abs/2105.02317)
+- using XAI to find instance level artifacts (e.g. Clever Hans https://doi.org/10.1016/j.inffus.2021.07.015, wolf/snow https://arxiv.org/abs/1602.04938), large residuals and explanations why predictions were wrong
+- unintended memorisation (e.g. https://arxiv.org/abs/1802.08232)
+- drift in performance gap between datasets (e.g. another image or text dataset)
+- model malfunction due to an unintendent use
+- wrong behaviour on out-of-distribution samples
 
-The final report will be a short (up to 4 pages) article with the JMLR template
+The final report will be a short (up to 4 pages) paper in the JMLR template
 
 
 ## Literature
