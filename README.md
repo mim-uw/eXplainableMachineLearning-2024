@@ -65,9 +65,9 @@ This analysis should be carried out for a selected model and the results should 
 
 ### Important dates:
 
-- 2023-11-03 – First checkpoint: Students chose the model, create a plan of work (to be discussed at the classes). Deliverables: 3 min presentation based on one slide.
-- 2023-12-08 – Second checkpoint: Provide initial experimental results. At least one vulnerability should have been found by now.
-- 2023-01-26 - Final checkpoint: Presentation of all identified  vulnerabilities
+- 2023-11-03 – First checkpoint: Students chose the model, create a plan of work (to be discussed at the classes). Deliverables: 3 min presentation based on one slide. (0-5 points)
+- 2023-12-08 – Second checkpoint: Provide initial experimental results. At least one vulnerability should have been found by now.  (0-10 points)
+- 2023-01-26 - Final checkpoint: Presentation of all identified  vulnerabilities.  (0-20 points)
 
 ### Models:
 
