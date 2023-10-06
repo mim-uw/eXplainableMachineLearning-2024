@@ -13,7 +13,7 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 * 2023-10-13  --  Fairness 
 * 2023-10-20  --  SHAP and friends	 
 * 2023-10-27  --  LIME and friends	
-* 2023-11-03  --  PROJECT: **First checkpoint** 
+* 2023-10-30  --  PROJECT: **First checkpoint** 
 * 2023-11-10  --  PDP and friends		
 * 2023-11-17  --  VIP / MCR	
 * 2023-11-24  --  Explanations specific to neural networks	
