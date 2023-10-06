@@ -1,10 +1,10 @@
 # Homework 2
 
-The goal of the second homework is to become familiar with SHapley Additive exPlanations (SHAP). 
+The purpose of the sixth homework is to learn about the method of calculating fairness statistics.
 
-Calculate these explanations on the model from Homework 1 and gather conclusions from the results.
+Calculate these statistics for a dataset of 'credit scoring' or 'adult income'.
 
-Focus on the presentation of results; for technical issues, seek support at [Materials towards Homework 2: SHAP with XGBoost & SVM](https://mim-uw.github.io/eXplainableMachineLearning-2023/hw2_shap_with_xgboost_on_titanic.html).
+Focus on the presentation of results; for technical issues, seek support at [Materials towards Homework 6: Fairness with XGBoost](https://mim-uw.github.io/eXplainableMachineLearning-2023/hw6_fairness_with_xgboost_on_titanic.html).
 
 Submit the homework to this directory.
 
@@ -12,41 +12,46 @@ Submit the homework to this directory.
 
 2023-10-19 EOD
 
-## Task A
+## Task 1
+We have two populations Blue (privileged) and Red (unprivileged), with the Blue population being 9 times larger than the Red population.
 
-For the selected models, prepare a knitr/jupyter notebook based on the following points (you can use models created in Homework 1).
-Submit your results on GitHub to the directory `Homeworks/HW2`.
+Individuals from both populations are requesting to attend XAI training to improve competency in this important area. Number of places is limited. The administrators of the training have decided to give priority to enrolling individuals who may need this training in the future, although unfortunately it is difficult to predict who will benefit.
 
-1. Train a tree-based ensemble model on the selected dataset; it can be one of random forest, GBM, CatBoost, XGBoost, LightGBM (various types) etc.
-2. Select two observations from the dataset and calculate the model's prediction.
-3. Next, for the same observations, calculate the decomposition of predictions, so-called variable attributions, using SHAP from two packages of choice, e.g. for Python: `dalex` and `shap`, for R: `DALEX` and `iml`.
-4. Find any two observations in the dataset, such that they have different variables of the highest importance, e.g. age and gender have the highest (absolute) attribution for observation A, but race and class are more important for observation B.
-5. (If possible) Select one variable X and find two observations in the dataset such that for one observation, X has a positive attribution, and for the other observation, X has a negative attribution.
-6. (How) Do the results differ across the two packages selected in point (3)?
-7. (Using one explanation package of choice) Train another model of any class: neural network, linear model, decision tree etc. and find an observation for which SHAP attributions are different between this model and the one trained in point (1).
-8. Comment on the results obtained in points (4)-(7)
+The decision rule adopted:
+1. In the Red group, half of the people will find the skills useful in future and half will not. Administrators randomly allocate 50% of people to training.
+2. in the Blue group, 80% of people will find the training useful in future and 20% will not, although of course it is not known who will find it useful. The administrators have built a predictive model based on user behaviour in predicting for whom it will be useful and whom will not. The model has the following performance:
 
-## Format
 
-The submitted homework should consist of two parts:
+| Blue                     	| Will use XAI 	| Will not use XAI 	| Total 	|
+|--------------------------	|--------------	|------------------	|-------	|
+| Enrolled in training     	| 60           	| 5               	| 65    	|
+| not enrolled in training 	| 20            	| 15               	| 35    	|
+| Total                    	| 80           	| 20               	| 100   	|
 
-1. The 1st part is the key results and comments from points (4)-(7). In this part **PLEASE DO NOT SHOW ANY R/PYTHON CODES, ONLY RESULTS (FIGURES, COMMENTS).**
-2. The 2nd part should start with the word "Appendix" or "Załącznik" and should include the reproducible R/Python code used to implement points (1)-(5) & (7).
 
-## Task B
+Task: Calculate the Demographic parity, equal opportunity and predictive rate parity coefficients for this decision rule.
 
-Calculate Shapley values for player A given the following value function
+Starred task: How can this decision rule be changed to improve its fairness?
 
-```
-v() = 0
-v(A) = 20
-v(B) = 20
-v(C) = 60
-v(A,B) = 60
-v(A,C) = 70
-v(B,C) = 70
-v(A,B,C) = 100
-```
+
+## Task 2
+
+For this homework, train models on one of the following datasets:
+
+- credit scoring https://www.kaggle.com/datasets/brycecf/give-me-some-credit-dataset (https://www.kaggle.com/competitions/GiveMeSomeCredit/)
+- adult income https://www.kaggle.com/datasets/wenruliu/adult-income-dataset
+
+Prepare a knitr/jupiter notebook with the following points.
+Submit your results on GitHub to the directory `Homeworks/HW6`.
+
+1. Train a model for the selected dataset.
+2. For the selected protected attribute (age, gender, race) calculate the following fairness coefficients: Statistical parity, Equal opportunity, Predictive parity.
+3. Train another model (different hyperparameters, feature transformations etc.) and see how the coefficients Statistical parity, Equal opportunity, Predictive parity behave for it.
+4. Apply the selected bias mitigation technique on the first model. Check how Statistical parity, Equal opportunity, Predictive parity coefficients behave after this correction.
+5. Compare the quality (performance) of the three models with their fairness coefficients. Is there any correlation?
+6. ! COMMENT on the results obtained in (2)-(5)
+
+
 
 ## **Important note:**
 
@@ -55,5 +60,10 @@ Try to convert the jupyter notebook into an HTML file, e.g. using the following 
 ```
 jupyter nbconvert --to=html --template=classic FILE_NAME.ipynb
 ```
+
+The submitted homework should consist of two parts:
+
+1. The 1st part is the key results and comments from points (2)-(5). In this part **PLEASE DO NOT SHOW ANY R/PYTHON CODES, ONLY RESULTS (FIGURES, COMMENTS).**
+2. The 2nd part should start with the word "Appendix" or "Załącznik" and should include the reproducible R/Python code used to implement points (1)-(5).
 
 
