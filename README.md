@@ -10,12 +10,12 @@ Winter semester 2023/24 [@pbiecek](https://github.com/pbiecek) [@hbaniecki](http
 Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays. 
 
 * 2023-10-06  --  Introduction, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/01_introduction.html). Extra reading: [Lipton 2017](https://arxiv.org/abs/1606.03490), [Rudin 2019](https://arxiv.org/abs/1811.10154)
-* 2023-10-13  --  SHAP and friends	
-* 2023-10-20  --  LIME and friends	
-* 2023-10-27  --  PDP and friends		
+* 2023-10-13  --  Fairness 
+* 2023-10-20  --  SHAP and friends	 
+* 2023-10-27  --  LIME and friends	
 * 2023-11-03  --  PROJECT: **First checkpoint** 
-* 2023-11-10  --  VIP / MCR	
-* 2023-11-17  --  Fairness	
+* 2023-11-10  --  PDP and friends		
+* 2023-11-17  --  VIP / MCR	
 * 2023-11-24  --  Explanations specific to neural networks	
 * 2023-12-01  --  Evaluation of explanations	
 * 2023-12-08  --  PROJECT: **Second checkpoint** 	
