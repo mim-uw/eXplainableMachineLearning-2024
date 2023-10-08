@@ -31,7 +31,7 @@ The final grade is based on activity in four areas:
 * mandatory: Project (0-35)
 * mandatory: Exam  (0-35)
 * optional: Homeworks (0-24)
-* optional: Presentation (0-6)
+* optional: Presentation (0-10)
 
 In total you can get from 0 to 100 points. 51 points are needed to pass this course.
 
