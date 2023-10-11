@@ -17,12 +17,12 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 * 2023-11-10  --  PDP and friends		
 * 2023-11-17  --  VIP / MCR	
 * 2023-11-24  --  Explanations specific to neural networks	
-* 2023-12-01  --  Evaluation of explanations	
+* 2023-12-01  --  Guest lecture
 * 2023-12-08  --  PROJECT: **Second checkpoint** 	
-* 2023-12-15  --  	
+* 2023-12-15  --  Evaluation of explanations		
 * 2024-01-12  --  	
 * 2024-01-19  --  	
-* 2024-01-26  -- PROJECT: **Final presentation**  	
+* 2024-01-26  -- PROJECT: **Final presentation**  / Guest lecture
 
 ## How to get a good grade
 
