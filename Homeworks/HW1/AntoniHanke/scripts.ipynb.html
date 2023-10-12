@@ -1,0 +1,161 @@
+<html>
+<head>
+<title>scripts.ipynb</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #cc7832;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+scripts.ipynb</font>
+</center></td></tr></table>
+<pre><span class="s0">#%% md 
+</span><span class="s1"># Main 
+</span><span class="s0">#%% md 
+</span><span class="s1">## Data investigation/cleaning 
+ 
+We will be investigating the dataset *spambase.csv* from OpenML-100 databases. This database concerns emails, of which some were classified as spam emails (~39%), whereas the rest were work and personal emails. 
+After getting rid of the first index column, and making sure there are no NAN cells, we are left with a 4601x56 dataframe. 
+ 
+According to found documentation (https://www.openml.org/search?type=data&amp;sort=runs&amp;id=44&amp;status=active), the columns of the dataframes are the following: 
+ 
+&gt; - 48 continuous real [0,100] attributes of type *word_freq_WORD* = percentage of words in the e-mail that match WORD, i.e. 100 * (number of times the WORD appears in the e-mail) / total number of words in e-mail. A &quot;word&quot; in this case is any string of alphanumeric characters bounded by non-alphanumeric characters or end-of-string. 
+&gt; - 6 continuous real [0,100] attributes of type *char_freq_CHAR* = percentage of characters in the e-mail that match CHAR, i.e. 100 * (number of CHAR occurences) / total characters in e-mail 
+&gt; - 1 continuous real [1,...] attribute of type *capital_run_length_average* = average length of uninterrupted sequences of capital letters 
+&gt; - 1 nominal {0,1} class attribute of type spam = denotes whether the e-mail was considered spam (1) or not (0), i.e. unsolicited commercial e-mail. 
+ 
+Each word frequency is on average low (&lt;1% of all words), however in some mails a word can make up to 40-50% of all the words of a mail. Similarly with the specified characters. 
+The average mean capital length between mails was ~5 characters, however the median was ~2 and the maximum was &gt;1100 indicating a skew to the right. 
+ 
+ 
+</span><span class="s0">#%% md 
+</span><span class="s1">## Models training 
+ 
+After initial investigation and cleaning of the data, we proceeded with training models to predict whether a mail is spam. 
+We plan to train 3 models: 
+- Simple Logistic Regression (no hyperparameters) 
+- Random Forest (few hyperparameters we will try to optimize for) 
+- TabPFN* - taken straight from their library with no fine-tuning. 
+ 
+We divided our dataset into 90% train and 10% eval subsets. 
+During training of our models we did a 5-fold cross-validation on the training set and then evaluated the final performance on the eval set. 
+Cross-validation helps with the potentially high-variance single split of train-test data, which could skew the results. 
+The cross-validation train-test results shown later will be the averaged train and test scores of the model on the 5 runs of the cross-validation process. 
+The completely separate eval set helps with models we fine-tuned for hyperparameters - once we select hyperparameters using cross-validation, we run the final model once on the eval set to get an unbiased performance indicator. 
+ 
+*Due to complexity limitations of TabPFN, we trained it only on a random 1000 rows of the input data. (Larger amounts of data returned an error) 
+</span><span class="s0">#%% md 
+</span><span class="s1">## Models results 
+ 
+Below we present a table with the results of each of the models. Since this is a 0-1 classification task, we operate on the accuracy metric. 
+For the RF model, we show the optimal one we found using cross-validation. The *CV Train* and *CV Test* columns show the averaged accuracy over the 5 runs of cross-validation. 
+ 
+ 
+|                     | CV train accuracy | CV test accuracy | Eval accuracy | 
+|---------------------|-------------------|------------------|---------------| 
+| Logistic Regression | 0.927             | 0.922            | 0.941         | 
+| Random Forest*      | 0.958             | 0.936            | 0.961         | 
+| TabPFN**            | 0.987             | 0.929            | 0.967         | 
+ 
+*Hyperparameters selected: (n_estimators, max_depth, max_features):  (200, 8, 0.3) 
+**Trained only on 1000 rows of the dataframe 
+ 
+### Comments 
+1. Logistic regression was the simplest to train. From the CV results we can see that very little overfitting was present (expectable due to very low number of parameters in a logistic regression). The final eval accuracy was still very high at ~94% 
+2. Random forest we optimized for hyperparameters. Some overfitting was present due to discrepancy between CV train accuracy (~96%) and CV test accuracy (~94%). Final accuracy of the RF was better than Logistic Regression standing at ~96% 
+3. TabPFN was trained only on a ~quarter of the dataset due to complexity limitation. Very high CV train accuracy was achieved (~99%), with lower CV test accuracy (~93%), showing more severe overfitting. However the final accuracy was highest of all models, despite training on the lowest amount of data, standing at ~97% 
+</span><span class="s0">#%% md 
+</span><span class="s1"># Appendix 
+## Data investigation 
+</span><span class="s0">#%% 
+</span><span class="s2">import </span><span class="s1">numpy </span><span class="s2">as </span><span class="s1">np</span>
+<span class="s2">import </span><span class="s1">pandas </span><span class="s2">as </span><span class="s1">pd</span>
+
+<span class="s1">spambase = pd.read_csv(</span><span class="s3">&quot;spambase.csv&quot;</span><span class="s1">)</span>
+<span class="s0">#%% 
+</span><span class="s1">spambase.head()</span>
+<span class="s0">#%% 
+</span><span class="s1">spambase.isna().sum().sum()</span>
+<span class="s0">#%% 
+</span><span class="s1">df = spambase.drop(spambase.columns[</span><span class="s4">0</span><span class="s1">]</span><span class="s2">, </span><span class="s1">axis=</span><span class="s4">1</span><span class="s1">) </span><span class="s0">#Cleaning first column which is just index</span>
+<span class="s1">df</span>
+<span class="s0">#%% 
+</span><span class="s1">df.describe()</span>
+<span class="s0">#%% 
+</span><span class="s1">X = df.loc[:</span><span class="s2">, </span><span class="s1">df.columns != </span><span class="s3">'TARGET'</span><span class="s1">]</span>
+<span class="s1">X.head()</span>
+<span class="s0">#%% 
+</span><span class="s1">y = df.loc[:</span><span class="s2">, </span><span class="s1">df.columns == </span><span class="s3">'TARGET'</span><span class="s1">]</span>
+<span class="s1">y.head()</span>
+<span class="s0">#%% 
+</span><span class="s2">from </span><span class="s1">sklearn.model_selection </span><span class="s2">import </span><span class="s1">train_test_split</span>
+<span class="s1">X_train</span><span class="s2">, </span><span class="s1">X_test</span><span class="s2">, </span><span class="s1">y_train</span><span class="s2">, </span><span class="s1">y_test = train_test_split(X</span><span class="s2">, </span><span class="s1">y</span><span class="s2">, </span><span class="s1">test_size=</span><span class="s4">0.1</span><span class="s2">, </span><span class="s1">random_state=</span><span class="s4">2</span><span class="s1">)</span>
+<span class="s0">#%% md 
+</span><span class="s1">## Logistic regression: 
+</span><span class="s0">#%% 
+</span><span class="s2">from </span><span class="s1">sklearn.model_selection </span><span class="s2">import </span><span class="s1">KFold</span>
+<span class="s2">from </span><span class="s1">sklearn.model_selection </span><span class="s2">import </span><span class="s1">cross_validate</span>
+<span class="s2">from </span><span class="s1">sklearn.metrics </span><span class="s2">import </span><span class="s1">accuracy_score</span>
+<span class="s2">from </span><span class="s1">sklearn.linear_model </span><span class="s2">import </span><span class="s1">LogisticRegression</span>
+<span class="s1">kf = KFold(n_splits = </span><span class="s4">5</span><span class="s1">)</span>
+<span class="s0">#%% 
+</span><span class="s1">clf = LogisticRegression(random_state=</span><span class="s4">2</span><span class="s1">)</span>
+<span class="s1">clf_scores = cross_validate(clf</span><span class="s2">, </span><span class="s1">X_train</span><span class="s2">, </span><span class="s1">y_train</span><span class="s2">, </span><span class="s1">cv=kf</span><span class="s2">, </span><span class="s1">n_jobs=-</span><span class="s4">1</span><span class="s2">, </span><span class="s1">scoring=</span><span class="s3">'accuracy'</span><span class="s2">, </span><span class="s1">return_train_score=</span><span class="s2">True</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s3">&quot;Accuracy: Train: &quot;</span><span class="s2">, </span><span class="s1">np.mean(np.array(clf_scores[</span><span class="s3">'train_score'</span><span class="s1">]))</span><span class="s2">, </span><span class="s3">&quot; Test: &quot;</span><span class="s2">, </span><span class="s1">np.mean(np.array(clf_scores[</span><span class="s3">'test_score'</span><span class="s1">])))</span>
+<span class="s0">#%% 
+</span><span class="s1">clf_final = LogisticRegression(random_state=</span><span class="s4">2</span><span class="s1">).fit(X_train</span><span class="s2">, </span><span class="s1">y_train)</span>
+<span class="s1">print(</span><span class="s3">&quot;Eval accuracy: &quot;</span><span class="s2">, </span><span class="s1">accuracy_score(y_test</span><span class="s2">, </span><span class="s1">clf_final.predict(X_test)))</span>
+<span class="s0">#%% md 
+</span><span class="s1">## Random Forest 
+</span><span class="s0">#%% 
+</span><span class="s2">from </span><span class="s1">sklearn.ensemble </span><span class="s2">import </span><span class="s1">RandomForestClassifier</span>
+
+
+<span class="s1">modelsRF = []</span>
+<span class="s2">for </span><span class="s1">n_estim </span><span class="s2">in </span><span class="s1">[</span><span class="s4">50</span><span class="s2">, </span><span class="s4">100</span><span class="s2">, </span><span class="s4">200</span><span class="s1">]:</span>
+  <span class="s2">for </span><span class="s1">max_dep </span><span class="s2">in </span><span class="s1">[</span><span class="s4">2</span><span class="s2">, </span><span class="s4">5</span><span class="s2">, </span><span class="s4">8</span><span class="s1">]:</span>
+    <span class="s2">for </span><span class="s1">max_feat </span><span class="s2">in </span><span class="s1">[</span><span class="s4">0.1</span><span class="s2">, </span><span class="s4">0.3</span><span class="s2">, </span><span class="s4">0.5</span><span class="s2">, </span><span class="s4">0.8</span><span class="s1">]:</span>
+      <span class="s1">print(</span><span class="s3">&quot;Training model with (n_estimators, max_depth, max_features): &quot;</span><span class="s2">, </span><span class="s1">(n_estim</span><span class="s2">, </span><span class="s1">max_dep</span><span class="s2">, </span><span class="s1">max_feat))</span>
+      <span class="s1">curr_regr = RandomForestClassifier(n_estimators=n_estim</span><span class="s2">, </span><span class="s1">max_depth = max_dep</span><span class="s2">, </span><span class="s1">max_features = max_feat</span><span class="s2">, </span><span class="s1">random_state = </span><span class="s4">1</span><span class="s1">)</span>
+      <span class="s1">curr_scores = cross_validate(curr_regr</span><span class="s2">, </span><span class="s1">X_train</span><span class="s2">, </span><span class="s1">y_train</span><span class="s2">, </span><span class="s1">cv=kf</span><span class="s2">, </span><span class="s1">n_jobs=-</span><span class="s4">1</span><span class="s2">, </span><span class="s1">scoring=</span><span class="s3">'accuracy'</span><span class="s2">, </span><span class="s1">return_train_score=</span><span class="s2">True</span><span class="s1">)</span>
+      <span class="s1">modelsRF.append((curr_regr</span><span class="s2">, </span><span class="s1">n_estim</span><span class="s2">, </span><span class="s1">max_dep</span><span class="s2">, </span><span class="s1">max_feat</span><span class="s2">, </span><span class="s1">curr_scores))</span>
+      <span class="s1">print(</span><span class="s3">&quot;Accuracy: Train: &quot;</span><span class="s2">, </span><span class="s1">np.mean(np.array(curr_scores[</span><span class="s3">'train_score'</span><span class="s1">]))</span><span class="s2">, </span><span class="s3">&quot; Test: &quot;</span><span class="s2">, </span><span class="s1">np.mean(np.array(curr_scores[</span><span class="s3">'test_score'</span><span class="s1">])))</span>
+<span class="s0">#%% 
+</span><span class="s1">results_chart_RF = pd.DataFrame(columns = [</span><span class="s3">'n_estimators'</span><span class="s2">, </span><span class="s3">'max_depth'</span><span class="s2">, </span><span class="s3">'max_features'</span><span class="s2">, </span><span class="s3">'score_type'</span><span class="s2">, </span><span class="s3">'Accuracy'</span><span class="s1">])</span>
+<span class="s2">for </span><span class="s1">m </span><span class="s2">in </span><span class="s1">modelsRF:</span>
+  <span class="s1">_</span><span class="s2">, </span><span class="s1">n_estim</span><span class="s2">, </span><span class="s1">max_dep</span><span class="s2">, </span><span class="s1">max_feat</span><span class="s2">, </span><span class="s1">scores = m</span>
+  <span class="s1">curr_frame = pd.DataFrame(columns = [</span><span class="s3">'n_estimators'</span><span class="s2">, </span><span class="s3">'max_depth'</span><span class="s2">, </span><span class="s3">'max_features'</span><span class="s2">, </span><span class="s3">'score_type'</span><span class="s2">, </span><span class="s3">'Accuracy'</span><span class="s1">])</span>
+  <span class="s2">for </span><span class="s1">sc_type </span><span class="s2">in </span><span class="s1">[</span><span class="s3">'test_score'</span><span class="s2">, </span><span class="s3">'train_score'</span><span class="s1">]:</span>
+    <span class="s2">for </span><span class="s1">k </span><span class="s2">in </span><span class="s1">range(</span><span class="s4">5</span><span class="s1">):</span>
+      <span class="s1">curr_scor = scores[sc_type][k]</span>
+      <span class="s1">curr_frame = curr_frame.append(</span>
+          <span class="s1">pd.DataFrame([[n_estim</span><span class="s2">, </span><span class="s1">max_dep</span><span class="s2">, </span><span class="s1">max_feat</span><span class="s2">, </span><span class="s1">sc_type</span><span class="s2">, </span><span class="s1">curr_scor]]</span><span class="s2">, </span><span class="s1">columns = [</span><span class="s3">'n_estimators'</span><span class="s2">, </span><span class="s3">'max_depth'</span><span class="s2">, </span><span class="s3">'max_features'</span><span class="s2">, </span><span class="s3">'score_type'</span><span class="s2">, </span><span class="s3">'Accuracy'</span><span class="s1">]))</span>
+      <span class="s0">#print(curr_frame)</span>
+  <span class="s1">results_chart_RF = results_chart_RF.append(curr_frame)</span>
+<span class="s0">#%% 
+</span><span class="s2">import </span><span class="s1">plotly.express </span><span class="s2">as </span><span class="s1">px</span>
+<span class="s0">#%% 
+</span><span class="s1">px.box(results_chart_RF</span><span class="s2">, </span><span class="s1">y=</span><span class="s3">'Accuracy'</span><span class="s2">, </span><span class="s1">color=</span><span class="s3">'score_type'</span><span class="s2">, </span><span class="s1">facet_col=</span><span class="s3">'max_features'</span><span class="s2">, </span><span class="s1">x=</span><span class="s3">'max_depth'</span><span class="s2">, </span><span class="s1">facet_row=</span><span class="s3">'n_estimators'</span><span class="s1">)</span>
+<span class="s0">#%% 
+</span><span class="s1">RF_final = RandomForestClassifier(n_estimators=</span><span class="s4">200</span><span class="s2">, </span><span class="s1">max_depth = </span><span class="s4">8</span><span class="s2">, </span><span class="s1">max_features = </span><span class="s4">0.3</span><span class="s2">, </span><span class="s1">random_state = </span><span class="s4">1</span><span class="s1">).fit(X_train</span><span class="s2">, </span><span class="s1">y_train)</span>
+<span class="s1">print(</span><span class="s3">&quot;Eval accuracy: &quot;</span><span class="s2">, </span><span class="s1">accuracy_score(y_test</span><span class="s2">, </span><span class="s1">RF_final.predict(X_test)))</span>
+<span class="s0">#%% md 
+</span><span class="s1">## TabPFN 
+</span><span class="s0">#%% 
+</span><span class="s2">from </span><span class="s1">tabpfn </span><span class="s2">import </span><span class="s1">TabPFNClassifier</span>
+<span class="s0">#%% 
+</span><span class="s1">tabpfn = TabPFNClassifier(device=</span><span class="s3">'cpu'</span><span class="s2">, </span><span class="s1">N_ensemble_configurations=</span><span class="s4">32</span><span class="s1">)</span>
+<span class="s1">tabpfn_scores = cross_validate(tabpfn</span><span class="s2">, </span><span class="s1">X_train[:</span><span class="s4">1000</span><span class="s1">]</span><span class="s2">, </span><span class="s1">y_train[:</span><span class="s4">1000</span><span class="s1">]</span><span class="s2">, </span><span class="s1">cv=kf</span><span class="s2">, </span><span class="s1">n_jobs=-</span><span class="s4">1</span><span class="s2">, </span><span class="s1">scoring=</span><span class="s3">'accuracy'</span><span class="s2">, </span><span class="s1">return_train_score=</span><span class="s2">True</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s3">&quot;Accuracy: Train: &quot;</span><span class="s2">, </span><span class="s1">np.mean(np.array(tabpfn_scores[</span><span class="s3">'train_score'</span><span class="s1">]))</span><span class="s2">, </span><span class="s3">&quot; Test: &quot;</span><span class="s2">, </span><span class="s1">np.mean(np.array(tabpfn_scores[</span><span class="s3">'test_score'</span><span class="s1">])))</span>
+<span class="s0">#%% 
+</span><span class="s1">tabpfn_final = TabPFNClassifier(device=</span><span class="s3">'cpu'</span><span class="s2">, </span><span class="s1">N_ensemble_configurations=</span><span class="s4">32</span><span class="s1">).fit(X_train[:</span><span class="s4">1000</span><span class="s1">]</span><span class="s2">, </span><span class="s1">y_train[:</span><span class="s4">1000</span><span class="s1">])</span>
+<span class="s1">print(</span><span class="s3">&quot;Eval accuracy: &quot;</span><span class="s2">, </span><span class="s1">accuracy_score(y_test</span><span class="s2">, </span><span class="s1">tabpfn_final.predict(X_test)))</span></pre>
+</body>
+</html>
