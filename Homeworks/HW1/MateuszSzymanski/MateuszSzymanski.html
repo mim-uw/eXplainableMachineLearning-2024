@@ -15104,7 +15104,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     <!-- End of mathjax configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 
-<div id="cell-id=2fe2036a" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=7d797c85" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15118,7 +15118,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-<div id="cell-id=78807ae8" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=71aac1a1" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15138,7 +15138,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-<div id="cell-id=6b947259" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=4887def1" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15154,7 +15154,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-<div id="cell-id=3ec0bf90" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=094461af" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15165,29 +15165,34 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <thead>
 <tr>
   <th>model</th>
-  <th>accuracy</th>
+  <th>train accuracy</th>
+  <th>test accuracy</th>
 </tr>
 </thead>
 <tbody>
 <tr>
   <td><code>LogisticRegression</code></td>
+  <td>77.79%</td>
   <td>76.56%</td>
 </tr>
 <tr>
   <td><code>RandomForestClassifier</code></td>
+  <td>100.00%</td>
   <td>87.02%</td>
 </tr>
 <tr>
   <td><code>XGBClassifier</code></td>
+  <td>100.00%</td>
   <td>85.66%</td>
 </tr>
 <tr>
   <td><code>TabPFNClassifier</code></td>
+  <td>94.97%</td>
   <td>86.23%</td>
 </tr>
 </tbody>
 </table>
-<p>The best-performing model among all the vanilla models is the <code>RandomForestClassifier</code> outperforming all other models. The difference between the best results for all models, except the logistic regression, is relatively small.</p>
+<p>The best-performing model among all the vanilla models is the <code>RandomForestClassifier</code> outperforming all other models. The difference between the best results for all models, except the logistic regression, is relatively small. We can see that both <code>RandomForestClassifier</code> and <code>XGBClassifier</code> are overfitted and the train accuracy is full.</p>
 <p>The logistic regression model barely exceeded the score of a constant model $70.65\%$.</p>
 <p>Even for the best model there is still a room for improvement. However, without further analysis and data exploration is rather hard to estimate the achievable upper bound of the accuracy.</p>
 
@@ -15195,7 +15200,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-<div id="cell-id=e6740904" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=21f72782" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15213,7 +15218,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-<div id="cell-id=2ec2663f" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=3d072740" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15252,7 +15257,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-<div id="cell-id=a09ad7a2" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=745fe60f" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15266,7 +15271,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-<div id="cell-id=64997378" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=2c5da772" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15281,7 +15286,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[55]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -15291,7 +15296,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
 <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">ConfusionMatrixDisplay</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">ConfusionMatrixDisplay</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 
 <span class="kn">from</span> <span class="nn">xgboost</span> <span class="kn">import</span> <span class="n">XGBClassifier</span>
@@ -15308,7 +15313,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">RANDOM_STATE</span> <span class="o">=</span> <span class="mi">42</span>
@@ -15324,7 +15329,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;datasets/phoneme.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
@@ -15339,12 +15344,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div id="cell-id=a11ca282" class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div id="cell-id=75164130" class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[68]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[25]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Constant model accuracy: </span><span class="si">{:.2f}</span><span class="s1">%.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))))</span>
@@ -15381,7 +15386,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[26]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
@@ -15394,21 +15399,25 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div id="cell-id=62113c9d" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div id="cell-id=a3e48c1f" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[56]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[33]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">fit_and_measure</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="o">=</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="o">=</span><span class="n">y_test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="n">train_accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    
     <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_test</span> <span class="o">==</span> <span class="n">y_pred</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">test_accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    
     <span class="n">matrix</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
     <span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">accuracy</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">f1</span>
+    <span class="k">return</span> <span class="n">train_accuracy</span><span class="p">,</span> <span class="n">test_accuracy</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">f1</span>
 </pre></div>
 
      </div>
@@ -15416,16 +15425,16 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div id="cell-id=bded80a2" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div id="cell-id=cd620bf5" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[58]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[43]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">display_f1_score</span><span class="p">(</span><span class="n">f1_score</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;F1-score: </span><span class="si">{:.2f}</span><span class="s1">%.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">f1_score</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{text}</span><span class="s1">: </span><span class="si">{value:.2f}</span><span class="s1">%.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">100</span> <span class="o">*</span> <span class="n">value</span><span class="p">))</span>
 </pre></div>
 
      </div>
@@ -15433,29 +15442,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div id="cell-id=41a8c6a7" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div id="cell-id=943f3188" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[59]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">display_accuracy</span><span class="p">(</span><span class="n">accuracy</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Accuracy: </span><span class="si">{:.2f}</span><span class="s1">%.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">accuracy</span><span class="p">))</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div id="cell-id=c633462d" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[57]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[44]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">plot_confusion_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
@@ -15468,17 +15460,18 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div id="cell-id=f0fb8f52" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div id="cell-id=bb029668" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[60]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[48]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">display_results</span><span class="p">(</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
-    <span class="n">display_accuracy</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span>
-    <span class="n">display_f1_score</span><span class="p">(</span><span class="n">f1_score</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">display_results</span><span class="p">(</span><span class="n">train_accuracy</span><span class="p">,</span> <span class="n">test_accuracy</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+    <span class="n">display</span><span class="p">(</span><span class="s1">&#39;Train accuracy: &#39;</span><span class="p">,</span> <span class="n">train_accuracy</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="s1">&#39;Test accuracy:  &#39;</span><span class="p">,</span> <span class="n">test_accuracy</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="s1">&#39;F1 score:       &#39;</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">)</span>
     <span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
 </pre></div>
 
@@ -15487,17 +15480,18 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div id="cell-id=62fdd5e3" class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div id="cell-id=dc93e132" class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[61]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[49]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">logistic_regression</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">)</span>
-<span class="n">logistic_regression_accuracy</span><span class="p">,</span> <span class="n">logistic_regression_matrix</span><span class="p">,</span> <span class="n">logistic_regression_f1</span> <span class="o">=</span> <span class="n">fit_and_measure</span><span class="p">(</span><span class="n">logistic_regression</span><span class="p">)</span>
-<span class="n">display_results</span><span class="p">(</span><span class="n">logistic_regression_accuracy</span><span class="p">,</span> <span class="n">logistic_regression_f1</span><span class="p">,</span> <span class="n">logistic_regression_matrix</span><span class="p">)</span>
+<span class="n">logistic_regression_results</span> <span class="o">=</span> <span class="n">fit_and_measure</span><span class="p">(</span><span class="n">logistic_regression</span><span class="p">)</span>
+<span class="n">logistic_regression_trian_accuracy</span><span class="p">,</span> <span class="n">logistic_regression_test_accuracy</span><span class="p">,</span> <span class="n">logistic_regression_matrix</span><span class="p">,</span> <span class="n">logistic_regression_f1</span> <span class="o">=</span> <span class="n">logistic_regression_results</span>
+<span class="n">display_results</span><span class="p">(</span><span class="n">logistic_regression_trian_accuracy</span><span class="p">,</span> <span class="n">logistic_regression_test_accuracy</span><span class="p">,</span> <span class="n">logistic_regression_f1</span><span class="p">,</span> <span class="n">logistic_regression_matrix</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15517,8 +15511,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy: 76.56%.
-F1-score: 57.09%.
+<pre>Train accuracy: : 77.79%.
+Test accuracy:  : 76.56%.
+F1 score:       : 57.09%.
 </pre>
 </div>
 </div>
@@ -15542,17 +15537,18 @@ class="
 
 </div>
 
-</div><div id="cell-id=a5196153" class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div id="cell-id=24db378b" class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[62]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[51]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">random_forest</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">)</span>
-<span class="n">random_forest_accuracy</span><span class="p">,</span> <span class="n">random_forest_matrix</span><span class="p">,</span> <span class="n">random_forest_f1</span> <span class="o">=</span> <span class="n">fit_and_measure</span><span class="p">(</span><span class="n">random_forest</span><span class="p">)</span>
-<span class="n">display_results</span><span class="p">(</span><span class="n">random_forest_accuracy</span><span class="p">,</span> <span class="n">random_forest_f1</span><span class="p">,</span> <span class="n">random_forest_matrix</span><span class="p">)</span>
+<span class="n">random_forest_results</span> <span class="o">=</span> <span class="n">fit_and_measure</span><span class="p">(</span><span class="n">random_forest</span><span class="p">)</span>
+<span class="n">random_forest_train_accuracy</span><span class="p">,</span> <span class="n">random_forest_test_accuracy</span><span class="p">,</span> <span class="n">random_forest_matrix</span><span class="p">,</span> <span class="n">random_forest_f1</span> <span class="o">=</span> <span class="n">random_forest_results</span>
+<span class="n">display_results</span><span class="p">(</span><span class="n">random_forest_train_accuracy</span><span class="p">,</span> <span class="n">random_forest_test_accuracy</span><span class="p">,</span> <span class="n">random_forest_f1</span><span class="p">,</span> <span class="n">random_forest_matrix</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15572,8 +15568,9 @@ class="
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy: 87.02%.
-F1-score: 77.84%.
+<pre>Train accuracy: : 100.00%.
+Test accuracy:  : 87.02%.
+F1 score:       : 77.84%.
 </pre>
 </div>
 </div>
@@ -15597,17 +15594,17 @@ class="
 
 </div>
 
-</div><div id="cell-id=c25688b4" class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div id="cell-id=4fc7e9b2" class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[63]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[52]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">xgb</span> <span class="o">=</span> <span class="n">XGBClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">)</span>
-<span class="n">xgb_accuracy</span><span class="p">,</span> <span class="n">xgb_matrix</span><span class="p">,</span> <span class="n">xgb_f1</span> <span class="o">=</span> <span class="n">fit_and_measure</span><span class="p">(</span><span class="n">xgb</span><span class="p">)</span>
-<span class="n">display_results</span><span class="p">(</span><span class="n">xgb_accuracy</span><span class="p">,</span> <span class="n">xgb_f1</span><span class="p">,</span> <span class="n">xgb_matrix</span><span class="p">)</span>
+<span class="n">xgb_train_accuracy</span><span class="p">,</span> <span class="n">xgb_test_accuracy</span><span class="p">,</span> <span class="n">xgb_matrix</span><span class="p">,</span> <span class="n">xgb_f1</span> <span class="o">=</span> <span class="n">fit_and_measure</span><span class="p">(</span><span class="n">xgb</span><span class="p">)</span>
+<span class="n">display_results</span><span class="p">(</span><span class="n">xgb_train_accuracy</span><span class="p">,</span> <span class="n">xgb_test_accuracy</span><span class="p">,</span> <span class="n">xgb_f1</span><span class="p">,</span> <span class="n">xgb_matrix</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15627,8 +15624,9 @@ class="
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy: 85.66%.
-F1-score: 75.29%.
+<pre>Train accuracy: : 100.00%.
+Test accuracy:  : 85.66%.
+F1 score:       : 75.29%.
 </pre>
 </div>
 </div>
@@ -15657,12 +15655,13 @@ class="
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[64]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[55]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">tab_pfn</span> <span class="o">=</span> <span class="n">TabPFNClassifier</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">N_ensemble_configurations</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
-<span class="n">tab_pfn_accuracy</span><span class="p">,</span> <span class="n">tab_pfn_matrix</span><span class="p">,</span> <span class="n">tab_pfn_f1</span> <span class="o">=</span> <span class="n">fit_and_measure</span><span class="p">(</span><span class="n">tab_pfn</span><span class="p">,</span> <span class="n">overwrite_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">display_results</span><span class="p">(</span><span class="n">tab_pfn_accuracy</span><span class="p">,</span> <span class="n">tab_pfn_f1</span><span class="p">,</span> <span class="n">tab_pfn_matrix</span><span class="p">)</span>
+<span class="n">tab_pfn_results</span> <span class="o">=</span> <span class="n">fit_and_measure</span><span class="p">(</span><span class="n">tab_pfn</span><span class="p">,</span> <span class="n">overwrite_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">tab_pfn_train_accuracy</span><span class="p">,</span> <span class="n">tab_pfn_test_accuracy</span><span class="p">,</span> <span class="n">tab_pfn_matrix</span><span class="p">,</span> <span class="n">tab_pfn_f1</span> <span class="o">=</span> <span class="n">tab_pfn_results</span>
+<span class="n">display_results</span><span class="p">(</span><span class="n">tab_pfn_train_accuracy</span><span class="p">,</span> <span class="n">tab_pfn_test_accuracy</span><span class="p">,</span> <span class="n">tab_pfn_f1</span><span class="p">,</span> <span class="n">tab_pfn_matrix</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15684,8 +15683,9 @@ class="
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>Loading model that can be used for inference only
 Using a Transformer with 25.82 M parameters
-Accuracy: 86.23%.
-F1-score: 76.87%.
+Train accuracy: : 94.97%.
+Test accuracy:  : 86.23%.
+F1 score:       : 76.87%.
 </pre>
 </div>
 </div>
@@ -15709,7 +15709,7 @@ class="
 
 </div>
 
-</div><div id="cell-id=568a08c1" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div id="cell-id=778f3fe8" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
