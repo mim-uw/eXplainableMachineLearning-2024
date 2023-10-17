@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Homework 1 Report - Model Comparison for Wine Quality Prediction</title>
+</head>
+<body>
+<h1>Homework 1 Report - Model Comparison for Wine Quality Prediction</h1>
+
+<h2>Dataset and Problem</h2>
+<p>Dataset wine_quality contains 11 continuous variables.</p>
+<ul>
+    <li>fixed_acidity</li>
+    <li>volatile_acidity</li>
+    <li>citric_acid</li>
+    <li>residual_sugar</li>
+    <li>chlorides</li>
+    <li>free_sulfur_dioxide</li>
+    <li>total_sulfur_dioxide</li>
+    <li>density</li>
+    <li>pH</li>
+    <li>sulphates</li>
+    <li>alcohol</li>
+</ul>
+<p>There is huge disproportion between classes - 4715 to 183 roughly 25.77 times.</p>
+
+<h2>Models</h2>
+<p>Models that were tested are:</p>
+<ul>
+    <li>LogisticRegression with 10_000 maximum number of iterations</li>
+    <li>RandomForestClassifier with 50 estimators</li>
+    <li>XGBClassifier</li>
+</ul>
+<p>Additionally, all model have random_state set to enhance repeatability.</p>
+
+<h2>Metrics</h2>
+<p>All metrics used for testing are:</p>
+<ul>
+    <li>accuracy</li>
+    <li>precision</li>
+    <li>recall</li>
+    <li>F1-score</li>
+</ul>
+
+<h2>Visualizations and Analysis</h2>
+<p>
+    In `metrics.html` I added comparison of different metrics per each model. It can be seen that the metrics differs a
+    lot across different models.
+</p>
+
+</body>
+</html>
