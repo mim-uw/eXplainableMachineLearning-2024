@@ -1,0 +1,356 @@
+---
+title: "LIME and friends"
+subtitle: "eXplainable AI"
+author: "Przemysław Biecek"
+date: "2023-10-20"
+format:
+  revealjs: 
+    theme: [default]
+    slide-number: true
+    touch: true
+    scrollable: true
+    chalkboard: 
+      buttons: false
+    logo: images/XAI.png
+    footer: eXplainable AI -- Introduction -- MIM UW -- 2023/24
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, out.width="70%", fig.width = 8, fig.height = 5.5)
+```
+
+# Paper of the day
+
+
+
+```{css, echo=FALSE}
+.reveal {
+  font-size: 24px;
+  line-height: 1.6!important;
+}
+code {
+  font-size: 18px!important;
+  line-height: 1.2!important;
+}
+pre {
+  line-height: 1.2!important;
+}
+```
+
+## "Why Should I Trust You?": Explaining the Predictions of Any Classifier
+
+- In this course, you will learn about the XAI methods and tools, but also about selected papers and researchers.
+- Today we will talk about LIME method, so the article of the day will be the LIME paper from 2016: ["Why Should I Trust You?" Explaining the Predictions of Any Classifier](https://www.kdd.org/kdd2016/papers/files/rfp0573-ribeiroA.pdf)
+
+<p><center><img src="images/lime_abstract.png" width="80%"/></center></p>
+
+
+## LIME paper in numbers
+
+- The LIME paper has over 10k citations
+- The `lime` python package has today over 10k starts on github
+- The *husky example* is now the most frequently presented example calling for debugging models (more on this later)
+
+<p><img src="images/lime_popular2.png" width="100%"/></p>
+
+<p><img src="images/lime_popular3.png" width="100%"/></p>
+
+
+## Why LIME?
+
+- Gives sparse explanations based on an interpretable data space
+- Very popular, especially for computer vision / NLP tasks
+- Very tempting approach -- explain a complex model by a simpler surrogate (although intuition can be deceptive here)
+
+<p><img src="images/shap_intro1.png" width="100%"/></p>
+
+<p><img src="images/shap_intro2.png" width="100%"/></p>
+
+- Figures below are from the paper [Explainable AI Methods - A Brief Overview](https://link.springer.com/chapter/10.1007/978-3-031-04083-2_2)
+
+## XAI pyramid
+
+- Thinking about the XAI pyramid, we are still in the same group of solutions as SHAP, i.e. local explanations focused on the importance of features
+- As with SHAP, local LIME explanations can be used to explain the global model
+
+<p><img src="images/xai_piramide.png" width="100%"/></p>
+
+## XAI pyramid
+
+- LIME is based on one of the three fundamental approaches to the explanation of predictive models.
+- LIME corresponds to panel B -- approximation with a linear surrogate model to get some understanding of black-box model behaviour around $x$
+
+<p><img src="images/xai_piramide_shap2.png" width="100%"/></p>
+
+
+# LIME - Local Interpretable Model-agnostic Explanations
+
+## Start with Why
+
+Desired characteristics of explanations (from LIME paper)
+
+- Explanations should be easy to understand = interpretable (simple, sparse, based on interpretable features) for a user
+- Good explanation should be model-agnostic, i.e. does not depend on model structure. This will help to compare explanations for different models
+- Local fidelity of explanations
+
+<p><center><img src="images/lime_intro.png" width="85%"/><br>
+Explanation process. Figure from LIME paper</center></p>
+
+
+## Core idea
+
+The core ideas behind LIME are:
+
+- Input to the model will be transformed into an  interpretable feature space
+- Local model behaviour will be explained by approximating it by an interpretable surrogate model (e.g. a shallow tree or a linear regression model)
+- Local approximation is trained on artificial points generated from the neighbourhood of the observation of interest $x$
+
+<p><center><img src="images/lime_introduction.png" width="50%"/></center><br>Figure from EMA book</p>
+
+
+## Fidelity-Interpretability Trade-off
+
+The explanation will be a model $g$ that approximates the behaviour of the complex model $f$ and is as simple as possible
+
+$$
+\hat g = \arg \min_{g \in G} L\{f, g, \pi(x)\} + \Omega(g)
+$$
+
+where
+
+- $f()$ is a model to be explained
+- $x$ is an observation of interest
+- $G$ is a class of interpretable models
+- $\hat g$ is an explanation, a model from class $G$ 
+- $\Omega(g)$ is a penalty function that measures complexity of models from $G$. For regression models, it could be the number of non-zero coefficients, for trees the number of nodes. For simplicity, we will consider a family of models $G$ such that all models in this family have complexity $K$
+- $L()$ a function measuring the discrepancy between models $f$ and $g$ in the neighborhood $\pi(x^*)$
+
+
+## LIME Algorithm
+
+Explanations can be calculated with the following instructions. 
+
+1. Let $x'$ = $h$(x) be a version of $x$ in the interpretable data space
+2. for i in 1...N {
+3. \ \ \ \ \ \ z'[i] = `sample_around`(x') 
+4. \ \ \ \ \ \ y'[i] = $f$(z'[i])
+5. \ \ \ \ \ \ w'[i] = `similarity`(x', z'[i]) 
+6. }
+7. return `K-LASSO`(y', x', w')
+
+where
+
+- $x$ -- an observation to be explained
+- $N$  -- sample size needed to fit a glass-box model 
+- $K$  -- complexity, the maximum number of variables in the glass-box model
+- `similarity` -- a distance function in the original data space
+- `K-LASSO` -- a weighted LASSO linear-regression model that selects K variables
+- w' -- weights that measure the similarity between original observation $x$ and new artificially generated observations. Weights may be based on $\exp(-d)$ function, where $d$ is an Euclidean distance, cosine distance or other distance measure (depending on the data structure),
+
+
+## Example: Duck or horse? 1/4
+
+<p><center><img src="images/lime_intro2.png" width="30%"/></center></p>
+
+Let's see how LIME can be used to solve this problem.
+
+**Initial settings**
+
+- Let's consider a VGG16 neural network trained on the ImageNet data
+- Input size are images 244 $\times$ 244 pixels. We have 1000 potential categories for the training data
+- The input space is of dimension 3 $\times$ 244 $\times$ 244, i.e. it is a 178 608-dimensional space
+- We need to translate the input to the interpretable data space, here image will be transformed into superpixels, which are treated as binary features (see an example later)
+- In this example $f()$ operates on space with $178 608$ dimensions, while the glass-box model $g()$ operates on a binary space with $100$ dimensions
+- We will ask for explanations of complexity 10
+
+## Example: Duck or horse? 2/4
+
+**Interpretable data space**
+
+- Interpretable data space is a binary space that encodes the presence or absence of selected features
+- The interpretable space can be constructed globally (e.g. for tabular data) or locally (e.g. for images)
+- For image data, the most common approach constructs an interpretable data space for each observation separately by using a segmentation algorithm.
+- The result is the division of the input image into a certain number of regions/called superpixels
+
+<p><img src="images/lime_ex_1.png" width="100%"/></p>
+
+## Example: Duck or horse? 3/4
+
+**Sampling around x**
+
+- We sample around the observation x' in the interpretable space
+- Since it's a binary space in which an observation $x$ is represented by a vector of ones
+- Sampling corresponds to selecting randomly coordinates that will be flipped to zero
+- We need N of such new observations
+
+<p><img src="images/lime_ex_2.png" width="100%"/></p>
+
+## Example: Duck or horse? 4/4
+
+**Fitting of an interpretable model**
+
+- For new data, we make predictions with model $f()$ 
+- And then for the observations in the interpretable representation we train a K-LASSO model which will have $K$ non-zero coefficients
+- We can use the $R^2$ coefficient to assess the quality of fit of the model $g()$
+
+<p><center><img src="images/lime_ex_3.png" width="75%"/></center></p>
+
+
+## Interpretable data representations
+
+How to transform the input data into a binary vector of shorter length?
+
+- For image data interpretable feature space is commonly based on  superpixels, i.e. through image segmentation
+- For text data, words or groups of words are frequently used as interpretable variables
+- For tabular data, continuous variables are often discretized to obtain interpretable binary variables. In the case of categorical variables, a combination of levels is used to get binary variables.
+
+
+<p><center><img src="images/lime_ex_8.png" width="75%"/></center><br>
+Example from [LIME github](https://marcotcr.github.io/lime/tutorials/Lime%20-%20basic%20usage%2C%20two%20class%20case.html)</p>
+
+
+## Model debugging 1/3
+
+- There are many reasons to know and develop XAI techniques
+- One of them is the ability to debug the model
+- The most well-known example is improving the performance of a network that misclassified the following image
+- How LIME can help here?
+
+<p><center><img src="images/lime_ex_9.png" width="25%"/></center><br>
+Figure from <a href="http://www.facweb.iitkgp.ac.in/~niloy/COURSE/Spring2018/IntelligentSystem/PPT_2018/why_should_i_trust_ppt.pdf">presentation about LIME</a> by Sameer Singh</p>
+
+## Model debugging 2/3
+
+- The model works very well. Classification between the husky of the wolf is accurate in almost every image except one. Why?
+
+<p><center><img src="images/lime_ex_6.png" width="70%"/></center><br>
+Figure from <a href="http://www.facweb.iitkgp.ac.in/~niloy/COURSE/Spring2018/IntelligentSystem/PPT_2018/why_should_i_trust_ppt.pdf">presentation about LIME</a> by Sameer Singh</p>
+
+## Model debugging 3/3
+
+- Can LIME's explanation help us find the source of the problem?
+- It turns out that in the case of classification as a wolf, the important feature is the snow in the background
+- Effectively, the model has learned to recognize snow in the background and so classifies as a wolf class
+- This is not a feature that people use for the classification of wolf/husky. But would you sacrifice the quality of the model to remove the dependence on using the background for classification?
+
+
+<p><center><img src="images/lime_ex_5.png" width="100%"/></center><br>
+Figure from <a href="http://www.facweb.iitkgp.ac.in/~niloy/COURSE/Spring2018/IntelligentSystem/PPT_2018/why_should_i_trust_ppt.pdf">presentation about LIME</a> by Sameer Singh</p>
+
+- This story has a happy ending. Proper training that cancelled the model dependency on the snow feature improved the accuracy of the model
+
+# From Local to Global
+
+## Explaining through examples
+
+The LIME method was designed to explain the model's behavior locally, around the observation of interest. But we are often interested in knowing or at least getting an intuition about how the model works globally. 
+
+The LIME paper proposes two approaches to globalizing LIME. Both are based on selecting some subset of observations that will be fairly representative of the entire dataset.
+Assuming the user has time to look at LIME explanations for B observations, the question is how to select them.
+
+**Submodular pick (SP) algorithm**
+
+<p><center><img src="images/lime_pick.png" width="75%"/></center></p>
+
+The criterion for selecting observations for global explanations
+
+$$
+c(V, W, I) = \sum_{j \in P'} 1_{\exists i\in V; W_{i,j} \neq 0} I_j
+$$
+
+where $I_j$ is feature importance for feature $i$ while $P'$ is a set of features in an interpretable data space.
+
+The LIME paper presents a user-study example where the submodular picks method most effectively convinces the user how the model works.
+
+
+## Can non-experts improve a classifier?
+
+- The LIME paper describes the results of several experiments involving human subjects
+- Very interesting results involved using explanations to improve the model, even if the improvement is generated by the knowledge and actions of non-ML-experts
+- The experiment was based on a model for a classification task based on text data
+- The explanations of the model generated by the LIME method were then shown to the participants of the experiment. That is, for each observation, the relevant words were highlighted
+- Participants could determine that some of these words were artefacts and should not be used by the model
+- The model has been then trained again on the remaining features, with the artefacts removed
+- It turns out that such feature engineering using experts led to better results after several rounds
+
+
+<p><center><img src="images/lime_fe.png" width="60%"/></center><br>Figure from the LIME paper</p>
+
+
+# Anchors
+
+## Anchors: High-Precision Model-Agnostic Explanations 1/3
+
+- A limitation of the LIME method is the assumption that locally the behaviour of a complex model can be explained by approximating it with an additive linear regression model.
+- But if there are significant interactions in the model then a local approximation with an additive model will not reflect the model's behaviour well.
+- In the example below, we can see that the word 'not' has no additive effect, so its effect does not additively compound with the word 'bad'.
+- To explain the model's behaviour, we need a rule that contains both variables.
+
+<p><center><img src="images/lime_anchors.png" width="60%"/></center><br>
+Figure from the [Anchors](https://homes.cs.washington.edu/~marcotcr/aaai18.pdf) paper</p>
+
+## Anchors: High-Precision Model-Agnostic Explanations 2/3
+
+- In [Anchors: High-Precision Model-Agnostic Explanations](https://homes.cs.washington.edu/~marcotcr/aaai18.pdf), the authors present an alternative explanation method that finds the shortest subset of conditions sufficient to explain the local behavior of the model.
+
+- The intuition behind the anchor is as follows: for a given observation anchors are *"sufficient"* conditions for a model prediction.
+
+- More formally: $A$ is a rule = set of logical conditions. We will say that $A$ is an *anchor* if $A(x) = 1$, i.e. observation $x$ fulfill all these conditions and probability that rule $A$ is true around $x$ is higher than $\tau$, i.e.
+
+$$
+E_{D(z|A)}[1_{f(x) = f(z)}] \geq \tau,
+$$
+
+where $D(z|A)$ is a distribution of points that fulfill the rule $A$.
+
+<p><center><img src="images/lime_anchors2.png" width="60%"/></center><br>
+Figure from the [Anchors](https://homes.cs.washington.edu/~marcotcr/aaai18.pdf) paper</p>
+
+## Anchors: High-Precision Model-Agnostic Explanations 3/3
+
+- ,,sufficient'' explanation
+- If these segments are in the picture then it is classified as a beagle
+
+<p><center><img src="images/anchors_1.png" width="90%"/></center><br>
+Figure from the [Anchors](https://homes.cs.washington.edu/~marcotcr/aaai18.pdf) paper</p>
+
+
+# LORE
+
+## LORE: Local Rule-Based Explanations
+
+There are many more XAI methods that analyze the local neighbourhood around a point $x$. An interesting variant is the LORE method for local explanations that use a few interesting concepts, such as counterfactual explanations. 
+
+The way LORE explanations are constructed is the following:
+
+ 1. Use a genetic algorithm to construct a balanced set of points around $x$. In this set, we have as many representatives of class $1$ as $0$
+ 2. Based on this data, a decision tree is trained
+ 3. Two types of rules are drawn from this decision tree. (1) an explanation, that is, a rule corresponding to the path for the observation $x$ and (2) a counterfactual explanation, that is, a set of rules saying what needs to be changed in $x$ so that the predicted class is not $f(x)$
+
+<p><center><img src="images/lore_ex_1.png" width="80%"/></center><br>
+Figure from the [LORE](https://arxiv.org/pdf/1805.10820.pdf) paper</p>
+
+
+
+
+
+
+
+
+
+# Take-home message
+
+- LIME method explains local model behaviour with **interpretable linear surrogate model**
+- LIME generates **sparse explanations**, with K features
+- Explanations use an **interpretable feature space**, like superpixels for image data, tokens for NLP, quartiles for numeric tabular data
+- Sampling strategy is very important. In LIME sampling operates on binary interpretable features space. In LORE sampling results in balanced data.
+- **From local to global**. Based on local explanations, global explanations can be constructed
+
+
+# Code-examples
+
+
+- See [Materials at GitHub](https://github.com/mim-uw/eXplainableMachineLearning-2023/Materials)
+
+<p><img src="images/lime_code.png" width="100%"/></p>
+
