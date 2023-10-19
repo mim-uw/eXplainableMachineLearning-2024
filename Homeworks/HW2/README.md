@@ -1,6 +1,6 @@
 # Homework 2
 
-The purpose of the sixth homework is to learn about the method of calculating fairness statistics.
+The purpose of the second homework is to learn about the method of calculating fairness statistics.
 
 Calculate these statistics for a dataset of 'credit scoring' or 'adult income'.
 
