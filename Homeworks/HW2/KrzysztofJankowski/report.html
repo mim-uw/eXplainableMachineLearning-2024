@@ -13268,8 +13268,8 @@ Number of rows is 48842. I split the dataset into training 80% and test 20% subs
 <li>n_estimators=50</li>
 <li>max_depth=3</li>
 </ul>
-<p>For bias mitigation I create an XGBoost Classifier (I call it XGBoostClassifierDropped) with the same hyperparameters but fitted on data with dropped columns gender and race.</p>
-<p>The performance of 3 models was evaluated using Dalex library and was the following:</p>
+<p>For bias mitigation I created an XGBoost Classifier (I call it XGBoostClassifierDropped) with the same hyperparameters but fitted on data with dropped columns gender and race. As it later turned out, the fairness improvement was very slight, so I also implemented the bias mitigation whrough reweight (gender and race).</p>
+<p>The performance of the models was evaluated using Dalex library and was the following:</p>
 <table>
 <thead>
 <tr>
@@ -13288,12 +13288,12 @@ Number of rows is 48842. I split the dataset into training 80% and test 20% subs
 <td>0.800221</td>
 <td>0.698795</td>
 <td>0.872044</td>
-<td>0.924196</td>
+<td><strong>0.924196</strong></td>
 </tr>
 <tr>
 <td>RandomForestClassifier</td>
 <td>0.10308</td>
-<td>1.0</td>
+<td><strong>1.0</strong></td>
 <td>0.186894</td>
 <td>0.785341</td>
 <td>0.89022</td>
@@ -13306,9 +13306,25 @@ Number of rows is 48842. I split the dataset into training 80% and test 20% subs
 <td>0.87143</td>
 <td>0.922946</td>
 </tr>
+<tr>
+<td>XGBoostReweightGender</td>
+<td>0.591104</td>
+<td>0.793797</td>
+<td>0.677617</td>
+<td>0.865391</td>
+<td>0.919209</td>
+</tr>
+<tr>
+<td>XGBoostReweightRace</td>
+<td><strong>0.622327</strong></td>
+<td>0.810134</td>
+<td><strong>0.703919</strong></td>
+<td><strong>0.874706</strong></td>
+<td>0.924227</td>
+</tr>
 </tbody>
 </table>
-<p>I checked the 3 models fairness on 2 protected variables:</p>
+<p>I checked the models fairness on 2 protected variables:</p>
 <ul>
 <li>gender with privileged group being 'male'.</li>
 <li>race with privileged group being 'White'.</li>
@@ -13323,16 +13339,16 @@ Number of rows is 48842. I split the dataset into training 80% and test 20% subs
 <p><strong>XGBoost</strong>:
 Bias detected in 2 metrics: FPR, STP</p>
 <p>Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.</p>
-<p>Ratios of metrics, based on 'male'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)</p>
 <p><strong>RandomForestClassifier</strong>:</p>
 <p>Bias detected in 2 metrics: TPR, STP</p>
 <p>Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.</p>
-<p>Ratios of metrics, based on 'male'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)</p>
 <p><strong>XGBoostDropped</strong>:</p>
 <p>Bias detected in 2 metrics: FPR, STP</p>
 <p>Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.</p>
-<p>Ratios of metrics, based on 'male'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)
-TPR       ACC       PPV       FPR       STP</p>
+<p>As the bias mitigation with dropping columns did not improve the fairness that much I added reweighting of race and gender to the analysis. The results are below:</p>
+<p><strong>XGBoostReweighted</strong>:</p>
+<p>Bias detected in 2 metrics: PPV, STP</p>
+<p>Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.</p>
 <table>
 <thead>
 <tr>
@@ -13373,6 +13389,15 @@ TPR       ACC       PPV       FPR       STP</p>
 <td><strong>0.246377</strong></td>
 <td><strong>0.317992</strong></td>
 </tr>
+<tr>
+<td>XGBoostReweighted</td>
+<td>female</td>
+<td>1.232925</td>
+<td>1.102748</td>
+<td><strong>0.759524</strong></td>
+<td>1.06383</td>
+<td><strong>0.592233</strong></td>
+</tr>
 </tbody>
 </table>
 <p>Plot below shows the results too:</p>
@@ -13387,15 +13412,16 @@ TPR       ACC       PPV       FPR       STP</p>
 <p><strong>XGBoost</strong>:
 Bias detected in 3 metrics: TPR, FPR, STP</p>
 <p>Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.</p>
-<p>Ratios of metrics, based on 'White'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)</p>
 <p><strong>RandomForest</strong>:
 Bias detected in 2 metrics: TPR, STP
 Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.</p>
-<p>Ratios of metrics, based on 'White'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)</p>
 <p><strong>XGBoostDropped</strong>:
 Bias detected in 3 metrics: TPR, FPR, STP
 Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.</p>
-<p>Ratios of metrics, based on 'White'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)</p>
+<p>As the results with the dropped columns did not improve that much I also did a reweighting of race.</p>
+<p><strong>XGBoostReweighted</strong>:</p>
+<p>Bias detected in 3 metrics: TPR, FPR, STP</p>
+<p>Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.</p>
 <table>
 <thead>
 <tr>
@@ -13437,6 +13463,15 @@ Conclusion: your model is not fair because 2 or more criteria exceeded acceptabl
 <td><strong>0.370558</strong></td>
 </tr>
 <tr>
+<td>XGBoostReweighted</td>
+<td>Amer-Indian-Eskimo</td>
+<td>0.859425</td>
+<td>1.080645</td>
+<td>1.234568</td>
+<td>NaN</td>
+<td><strong>0.372449</strong></td>
+</tr>
+<tr>
 <td>XGBoost</td>
 <td>Asian-Pac-Islander</td>
 <td>0.931529</td>
@@ -13460,8 +13495,17 @@ Conclusion: your model is not fair because 2 or more criteria exceeded acceptabl
 <td>0.998395</td>
 <td>0.947977</td>
 <td>0.837703</td>
-<td>2.056604</td>
+<td><strong>2.056604</strong></td>
 <td>1.238579</td>
+</tr>
+<tr>
+<td>XGBoostReweighted</td>
+<td>Asian-Pac-Islander</td>
+<td>0.993610</td>
+<td>0.951613</td>
+<td>0.850617</td>
+<td><strong>2.00</strong></td>
+<td>1.214286</td>
 </tr>
 <tr>
 <td>XGBoost</td>
@@ -13491,6 +13535,15 @@ Conclusion: your model is not fair because 2 or more criteria exceeded acceptabl
 <td><strong>0.441624</strong></td>
 </tr>
 <tr>
+<td>XGBoostReweighted</td>
+<td>Black</td>
+<td>0.916933</td>
+<td>1.077189</td>
+<td>1.113580</td>
+<td><strong>0.20</strong></td>
+<td><strong>0.433673</strong></td>
+</tr>
+<tr>
 <td>XGBoost</td>
 <td>Other</td>
 <td><strong>0.636943</strong></td>
@@ -13517,6 +13570,15 @@ Conclusion: your model is not fair because 2 or more criteria exceeded acceptabl
 <td><strong>0.264151</strong></td>
 <td><strong>0.309645</strong></td>
 </tr>
+<tr>
+<td>XGBoostReweighted</td>
+<td>Other</td>
+<td>0.798722</td>
+<td>1.067972</td>
+<td>1.028395</td>
+<td><strong>0.28</strong></td>
+<td><strong>0.372449</strong></td>
+</tr>
 </tbody>
 </table>
 <p>Plot below shows the combined results too:</p>
@@ -13529,10 +13591,11 @@ Conclusion: your model is not fair because 2 or more criteria exceeded acceptabl
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Models-Analysis">Models Analysis<a class="anchor-link" href="#Models-Analysis">¶</a></h3><p>All models show some bias in gender and race.
 <strong>Gender</strong>:
-Here models have problems with fairness in different metrics. XGBoost in FPR and STP and RadomForest on TPR and STP. Regarding the classification performance, they both perform well with XGBoost slightly outperforming RandomForest in auc and accuracy, tremendously outperforming in recal and f1 and being worse in precision. In general we see that RandomForest performs worse as it comes to fairness especially in equal opportunity ratio.</p>
-<p>The differences between XGBoost and XGBoost with bias mitigation is very slight, however it can be seen that by dropping the columns with race and gender the fairness improved. Probably is shows that while being big factors, there are also other factors that have big impact on fairness.</p>
+Here models have problems with fairness in different metrics. XGBoost in FPR and STP and RadomForest on TPR and STP. Regarding the classification performance, they both perform well with XGBoost slightly outperforming RandomForest in auc and accuracy, tremendously outperforming in recal and f1 and being worse in precision. In general we see that RandomForest performs worse as it comes to fairness especially in equal opportunity ratio. We can see a correlation between poor performance of RandomForest in recall and f1 and its fairness.</p>
+<p>The differences between XGBoost and XGBoost with bias mitigation is very slight, however it can be seen that by dropping the columns with race and gender the fairness improved. Probably is shows that while being big factors, there are also other factors that have big impact on fairness.
+Reweighting changes the results of the XGBoost a lot in this case. It shifts the exceeded fairness coefficient to exceeded in PPV and STP. Except PPV it improves the fairness especially tremendously in predictive equality ratio and also good in statistical parity ratio. It does it without sacrificing the performance measured above which stays great.</p>
 <p><strong>Race</strong>:
-Here the results between RandomForest and XGBoost are very similar to the first section. It seems that in this case RandomForest is worse than XGBoost in terms of fairness but not as much as it was seen in the gender analysis. Here again, after bias mitigation the fairness in XGBoost improved slightly.</p>
+Here the results between RandomForest and XGBoost are very similar to the first section. It seems that in this case RandomForest is worse than XGBoost in terms of fairness but not as much as it was seen in the gender analysis. Here again, after bias mitigation the fairness in XGBoost improved slightly. Unfortunately in this case the reweighting helps less but still yields some improvements in fairness while being even a bit better in most performance metrics.</p>
 </div>
 </div>
 </div>
@@ -13552,7 +13615,7 @@ Here the results between RandomForest and XGBoost are very similar to the first 
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=555dae0c4388cfdc">
 <div class="input">
-<div class="prompt input_prompt">In [103]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -13585,283 +13648,6 @@ Here the results between RandomForest and XGBoost are very similar to the first 
 </div>
 </div>
 </div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Number of rows and columns is (48842, 15)
-Index(['Female', 'Male'], dtype='object')
-Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], dtype='object')
-</pre>
-</div>
-</div>
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_html rendered_html output_subarea"><div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>age</th>
-<th>workclass</th>
-<th>fnlwgt</th>
-<th>education</th>
-<th>educational-num</th>
-<th>marital-status</th>
-<th>occupation</th>
-<th>relationship</th>
-<th>race</th>
-<th>gender</th>
-<th>capital-gain</th>
-<th>capital-loss</th>
-<th>hours-per-week</th>
-<th>native-country</th>
-<th>income</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>0</th>
-<td>25</td>
-<td>Private</td>
-<td>226802</td>
-<td>11th</td>
-<td>7</td>
-<td>Never-married</td>
-<td>Machine-op-inspct</td>
-<td>Own-child</td>
-<td>2</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>40</td>
-<td>United-States</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1</th>
-<td>38</td>
-<td>Private</td>
-<td>89814</td>
-<td>HS-grad</td>
-<td>9</td>
-<td>Married-civ-spouse</td>
-<td>Farming-fishing</td>
-<td>Husband</td>
-<td>4</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>50</td>
-<td>United-States</td>
-<td>0</td>
-</tr>
-<tr>
-<th>2</th>
-<td>28</td>
-<td>Local-gov</td>
-<td>336951</td>
-<td>Assoc-acdm</td>
-<td>12</td>
-<td>Married-civ-spouse</td>
-<td>Protective-serv</td>
-<td>Husband</td>
-<td>4</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>40</td>
-<td>United-States</td>
-<td>1</td>
-</tr>
-<tr>
-<th>3</th>
-<td>44</td>
-<td>Private</td>
-<td>160323</td>
-<td>Some-college</td>
-<td>10</td>
-<td>Married-civ-spouse</td>
-<td>Machine-op-inspct</td>
-<td>Husband</td>
-<td>2</td>
-<td>1</td>
-<td>7688</td>
-<td>0</td>
-<td>40</td>
-<td>United-States</td>
-<td>1</td>
-</tr>
-<tr>
-<th>4</th>
-<td>18</td>
-<td>?</td>
-<td>103497</td>
-<td>Some-college</td>
-<td>10</td>
-<td>Never-married</td>
-<td>?</td>
-<td>Own-child</td>
-<td>4</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>30</td>
-<td>United-States</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-</div></div>
-</div>
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_html rendered_html output_subarea"><div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>age</th>
-<th>fnlwgt</th>
-<th>educational-num</th>
-<th>race</th>
-<th>gender</th>
-<th>capital-gain</th>
-<th>capital-loss</th>
-<th>hours-per-week</th>
-<th>income</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>count</th>
-<td>48842.000000</td>
-<td>4.884200e+04</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-</tr>
-<tr>
-<th>mean</th>
-<td>38.643585</td>
-<td>1.896641e+05</td>
-<td>10.078089</td>
-<td>3.668052</td>
-<td>0.668482</td>
-<td>1079.067626</td>
-<td>87.502314</td>
-<td>40.422382</td>
-<td>0.239282</td>
-</tr>
-<tr>
-<th>std</th>
-<td>13.710510</td>
-<td>1.056040e+05</td>
-<td>2.570973</td>
-<td>0.845986</td>
-<td>0.470764</td>
-<td>7452.019058</td>
-<td>403.004552</td>
-<td>12.391444</td>
-<td>0.426649</td>
-</tr>
-<tr>
-<th>min</th>
-<td>17.000000</td>
-<td>1.228500e+04</td>
-<td>1.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>1.000000</td>
-<td>0.000000</td>
-</tr>
-<tr>
-<th>25%</th>
-<td>28.000000</td>
-<td>1.175505e+05</td>
-<td>9.000000</td>
-<td>4.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>40.000000</td>
-<td>0.000000</td>
-</tr>
-<tr>
-<th>50%</th>
-<td>37.000000</td>
-<td>1.781445e+05</td>
-<td>10.000000</td>
-<td>4.000000</td>
-<td>1.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>40.000000</td>
-<td>0.000000</td>
-</tr>
-<tr>
-<th>75%</th>
-<td>48.000000</td>
-<td>2.376420e+05</td>
-<td>12.000000</td>
-<td>4.000000</td>
-<td>1.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>45.000000</td>
-<td>0.000000</td>
-</tr>
-<tr>
-<th>max</th>
-<td>90.000000</td>
-<td>1.490400e+06</td>
-<td>16.000000</td>
-<td>4.000000</td>
-<td>1.000000</td>
-<td>99999.000000</td>
-<td>4356.000000</td>
-<td>99.000000</td>
-<td>1.000000</td>
-</tr>
-</tbody>
-</table>
-</div></div>
-</div>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=46a96cea87caa2ec"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -13872,7 +13658,7 @@ Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], d
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=f21a281d71de085">
 <div class="input">
-<div class="prompt input_prompt">In [104]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">categorical_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'workclass'</span><span class="p">,</span> <span class="s1">'education'</span><span class="p">,</span> <span class="s1">'marital-status'</span><span class="p">,</span> <span class="s1">'occupation'</span><span class="p">,</span> <span class="s1">'relationship'</span><span class="p">,</span>
@@ -13886,7 +13672,7 @@ Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], d
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=6d97bb5796759523">
 <div class="input">
-<div class="prompt input_prompt">In [105]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">hist</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
@@ -13899,7 +13685,7 @@ Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], d
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=29fc6ff8c96d539c">
 <div class="input">
-<div class="prompt input_prompt">In [106]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">fig_gender</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
@@ -13927,7 +13713,7 @@ Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], d
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=2d1c2d41a86d4d96">
 <div class="input">
-<div class="prompt input_prompt">In [107]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
@@ -13954,7 +13740,7 @@ Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], d
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=76199f38dae87d1e">
 <div class="input">
-<div class="prompt input_prompt">In [108]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">df_preprocessed</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">one_hot_encode_categorical</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
@@ -13965,256 +13751,11 @@ Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], d
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=87bca3c982f83ecd">
 <div class="input">
-<div class="prompt input_prompt">In [109]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">df_preprocessed</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="prompt output_prompt">Out[109]:</div>
-<div class="output_html rendered_html output_subarea output_execute_result"><div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>one_hot__workclass_?</th>
-<th>one_hot__workclass_Federal-gov</th>
-<th>one_hot__workclass_Local-gov</th>
-<th>one_hot__workclass_Never-worked</th>
-<th>one_hot__workclass_Private</th>
-<th>one_hot__workclass_Self-emp-inc</th>
-<th>one_hot__workclass_Self-emp-not-inc</th>
-<th>one_hot__workclass_State-gov</th>
-<th>one_hot__workclass_Without-pay</th>
-<th>one_hot__education_10th</th>
-<th>...</th>
-<th>one_hot__native-country_Yugoslavia</th>
-<th>remainder__age</th>
-<th>remainder__fnlwgt</th>
-<th>remainder__educational-num</th>
-<th>remainder__race</th>
-<th>remainder__gender</th>
-<th>remainder__capital-gain</th>
-<th>remainder__capital-loss</th>
-<th>remainder__hours-per-week</th>
-<th>remainder__income</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>count</th>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>...</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>4.884200e+04</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-<td>48842.000000</td>
-</tr>
-<tr>
-<th>mean</th>
-<td>0.057307</td>
-<td>0.029319</td>
-<td>0.064207</td>
-<td>0.000205</td>
-<td>0.694198</td>
-<td>0.034704</td>
-<td>0.079071</td>
-<td>0.040559</td>
-<td>0.000430</td>
-<td>0.028439</td>
-<td>...</td>
-<td>0.000471</td>
-<td>38.643585</td>
-<td>1.896641e+05</td>
-<td>10.078089</td>
-<td>3.668052</td>
-<td>0.668482</td>
-<td>1079.067626</td>
-<td>87.502314</td>
-<td>40.422382</td>
-<td>0.239282</td>
-</tr>
-<tr>
-<th>std</th>
-<td>0.232431</td>
-<td>0.168701</td>
-<td>0.245124</td>
-<td>0.014307</td>
-<td>0.460751</td>
-<td>0.183030</td>
-<td>0.269853</td>
-<td>0.197269</td>
-<td>0.020731</td>
-<td>0.166224</td>
-<td>...</td>
-<td>0.021695</td>
-<td>13.710510</td>
-<td>1.056040e+05</td>
-<td>2.570973</td>
-<td>0.845986</td>
-<td>0.470764</td>
-<td>7452.019058</td>
-<td>403.004552</td>
-<td>12.391444</td>
-<td>0.426649</td>
-</tr>
-<tr>
-<th>min</th>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>...</td>
-<td>0.000000</td>
-<td>17.000000</td>
-<td>1.228500e+04</td>
-<td>1.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>1.000000</td>
-<td>0.000000</td>
-</tr>
-<tr>
-<th>25%</th>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>...</td>
-<td>0.000000</td>
-<td>28.000000</td>
-<td>1.175505e+05</td>
-<td>9.000000</td>
-<td>4.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>40.000000</td>
-<td>0.000000</td>
-</tr>
-<tr>
-<th>50%</th>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>1.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>...</td>
-<td>0.000000</td>
-<td>37.000000</td>
-<td>1.781445e+05</td>
-<td>10.000000</td>
-<td>4.000000</td>
-<td>1.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>40.000000</td>
-<td>0.000000</td>
-</tr>
-<tr>
-<th>75%</th>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>1.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>...</td>
-<td>0.000000</td>
-<td>48.000000</td>
-<td>2.376420e+05</td>
-<td>12.000000</td>
-<td>4.000000</td>
-<td>1.000000</td>
-<td>0.000000</td>
-<td>0.000000</td>
-<td>45.000000</td>
-<td>0.000000</td>
-</tr>
-<tr>
-<th>max</th>
-<td>1.000000</td>
-<td>1.000000</td>
-<td>1.000000</td>
-<td>1.000000</td>
-<td>1.000000</td>
-<td>1.000000</td>
-<td>1.000000</td>
-<td>1.000000</td>
-<td>1.000000</td>
-<td>1.000000</td>
-<td>...</td>
-<td>1.000000</td>
-<td>90.000000</td>
-<td>1.490400e+06</td>
-<td>16.000000</td>
-<td>4.000000</td>
-<td>1.000000</td>
-<td>99999.000000</td>
-<td>4356.000000</td>
-<td>99.000000</td>
-<td>1.000000</td>
-</tr>
-</tbody>
-</table>
-<p>8 rows × 104 columns</p>
-</div></div>
 </div>
 </div>
 </div>
@@ -14228,7 +13769,7 @@ Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], d
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=41c8fbb9dfb441ba">
 <div class="input">
-<div class="prompt input_prompt">In [110]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
@@ -14244,7 +13785,7 @@ Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], d
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=d75682c69b1399ec">
 <div class="input">
-<div class="prompt input_prompt">In [111]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="c1"># print shapes</span>
@@ -14253,20 +13794,6 @@ Index(['Amer-Indian-Eskimo', 'Asian-Pac-Islander', 'Black', 'Other', 'White'], d
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'y_train shape: </span><span class="si">{</span><span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'y_test shape: </span><span class="si">{</span><span class="n">y_test</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>X_train shape: (39073, 103)
-X_test shape: (9769, 103)
-y_train shape: (39073,)
-y_test shape: (9769,)
-</pre>
-</div>
 </div>
 </div>
 </div>
@@ -14280,7 +13807,7 @@ y_test shape: (9769,)
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=c359dccf3b2a46ae">
 <div class="input">
-<div class="prompt input_prompt">In [112]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="c1"># Uncomment if you do not have these libraries installed.</span>
@@ -14293,7 +13820,7 @@ y_test shape: (9769,)
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=740deaadcc6193b5">
 <div class="input">
-<div class="prompt input_prompt">In [113]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
@@ -14312,18 +13839,10 @@ y_test shape: (9769,)
 </div>
 </div>
 </div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="prompt output_prompt">Out[113]:</div>
-<div class="output_html rendered_html output_subarea output_execute_result"><style>#sk-container-id-7 {color: black;}#sk-container-id-7 pre{padding: 0;}#sk-container-id-7 div.sk-toggleable {background-color: white;}#sk-container-id-7 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-7 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-7 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-7 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-7 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-7 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-7 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-7 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-7 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-7 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-7 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-7 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-7 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-7 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-7 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-7 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-7 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-7 div.sk-item {position: relative;z-index: 1;}#sk-container-id-7 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-7 div.sk-item::before, #sk-container-id-7 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-7 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-7 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-7 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-7 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-7 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-7 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-7 div.sk-label-container {text-align: center;}#sk-container-id-7 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-7 div.sk-text-repr-fallback {display: none;}</style><div class="sk-top-container" id="sk-container-id-7"><div class="sk-text-repr-fallback"><pre>RandomForestClassifier(max_depth=3, n_estimators=50, n_jobs=-1, random_state=42)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br/>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator sk-toggleable"><input checked="" class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-7" type="checkbox"/><label class="sk-toggleable__label sk-toggleable__label-arrow" for="sk-estimator-id-7">RandomForestClassifier</label><div class="sk-toggleable__content"><pre>RandomForestClassifier(max_depth=3, n_estimators=50, n_jobs=-1, random_state=42)</pre></div></div></div></div></div></div>
-</div>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=843e3f3c0b9cfbac">
 <div class="input">
-<div class="prompt input_prompt">In [114]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">dalex</span> <span class="k">as</span> <span class="nn">dx</span>
@@ -14378,7 +13897,7 @@ y_test shape: (9769,)
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=7d40f409f36d29bc">
 <div class="input">
-<div class="prompt input_prompt">In [115]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">xgboost_fobject_gender</span><span class="p">,</span> <span class="n">xgboost_fobject_race</span> <span class="o">=</span> <span class="n">evaluate_model_fairness</span><span class="p">(</span><span class="n">xbg_model</span><span class="p">,</span> <span class="s1">'XGBClassifier'</span><span class="p">)</span>
@@ -14386,105 +13905,10 @@ y_test shape: (9769,)
 </div>
 </div>
 </div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Performance of XGBClassifier
-Preparation of a new explainer is initiated
-
-  -&gt; data              : 9769 rows 103 cols
-  -&gt; target variable   : Parameter 'y' was a pandas.Series. Converted to a numpy.ndarray.
-  -&gt; target variable   : 9769 values
-  -&gt; model_class       : xgboost.sklearn.XGBClassifier (default)
-  -&gt; label             : XGBClassifier
-  -&gt; predict function  : &lt;function evaluate_model_fairness.&lt;locals&gt;.classifier_predict_proba at 0x7f41de427370&gt; will be used
-  -&gt; predict function  : Accepts pandas.DataFrame and numpy.ndarray.
-  -&gt; predicted values  : min = 0.000815, mean = 0.238, max = 0.997
-  -&gt; model type        : classification will be used (default)
-  -&gt; residual function : difference between y and yhat (default)
-  -&gt; residuals         : min = -0.973, mean = 0.00134, max = 0.999
-  -&gt; model_info        : package xgboost
-
-A new explainer has been created!
-</pre>
-</div>
-</div>
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_html rendered_html output_subarea"><div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>recall</th>
-<th>precision</th>
-<th>f1</th>
-<th>accuracy</th>
-<th>auc</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>XGBClassifier</th>
-<td>0.620188</td>
-<td>0.800221</td>
-<td>0.698795</td>
-<td>0.872044</td>
-<td>0.924196</td>
-</tr>
-</tbody>
-</table>
-</div></div>
-</div>
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Bias detected in 2 metrics: FPR, STP
-
-Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.
-
-Ratios of metrics, based on 'male'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)
-             TPR       ACC       PPV       FPR       STP
-female  0.870458  1.114286  1.022556  0.228571  0.311203
-None
-Bias detected in 3 metrics: TPR, FPR, STP
-
-Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.
-
-Ratios of metrics, based on 'White'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)
-                         TPR       ACC     PPV       FPR       STP
-Amer-Indian-Eskimo  0.856688  1.083141  1.2500       NaN  0.366834
-Asian-Pac-Islander  0.931529  0.950346  0.8700  1.735849  1.115578
-Black               0.864650  1.073903  1.1075  0.207547  0.412060
-Other               0.636943  1.056582  1.0000  0.264151  0.306533
-
-Warning!
-Take into consideration that NaN's are present, consider checking 'metric_scores' plot to see the difference
-None
-</pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=9500066b01e87c34">
 <div class="input">
-<div class="prompt input_prompt">In [116]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">random_forest_fobject_gender</span><span class="p">,</span> <span class="n">random_forest_fobject_race</span> <span class="o">=</span> <span class="n">evaluate_model_fairness</span><span class="p">(</span><span class="n">random_forest</span><span class="p">,</span> <span class="s1">'RandomForestClassifier'</span><span class="p">)</span>
@@ -14492,118 +13916,10 @@ None
 </div>
 </div>
 </div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Performance of RandomForestClassifier
-Preparation of a new explainer is initiated
-
-  -&gt; data              : 9769 rows 103 cols
-  -&gt; target variable   : Parameter 'y' was a pandas.Series. Converted to a numpy.ndarray.
-  -&gt; target variable   : 9769 values
-  -&gt; model_class       : sklearn.ensemble._forest.RandomForestClassifier (default)
-  -&gt; label             : RandomForestClassifier
-  -&gt; predict function  : &lt;function evaluate_model_fairness.&lt;locals&gt;.classifier_predict_proba at 0x7f41de427eb0&gt; will be used
-  -&gt; predict function  : Accepts pandas.DataFrame and numpy.ndarray.
-  -&gt; predicted values  : min = 0.0535, mean = 0.24, max = 0.61
-  -&gt; model type        : classification will be used (default)
-  -&gt; residual function : difference between y and yhat (default)
-  -&gt; residuals         : min = -0.498, mean = -0.000654, max = 0.912
-  -&gt; model_info        : package sklearn
-
-A new explainer has been created!
-</pre>
-</div>
-</div>
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/krzysztof/Desktop/MLMagisterskie/MachineLearning3semester/venv/lib/python3.10/site-packages/sklearn/base.py:465: UserWarning:
-
-X does not have valid feature names, but RandomForestClassifier was fitted with feature names
-
-</pre>
-</div>
-</div>
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_html rendered_html output_subarea"><div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>recall</th>
-<th>precision</th>
-<th>f1</th>
-<th>accuracy</th>
-<th>auc</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>RandomForestClassifier</th>
-<td>0.10308</td>
-<td>1.0</td>
-<td>0.186894</td>
-<td>0.785341</td>
-<td>0.89022</td>
-</tr>
-</tbody>
-</table>
-</div></div>
-</div>
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Bias detected in 2 metrics: TPR, STP
-
-Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.
-
-Ratios of metrics, based on 'male'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)
-             TPR       ACC  PPV  FPR       STP
-female  0.213675  1.218579  1.0  NaN  0.083333
-
-Warning!
-Take into consideration that NaN's are present, consider checking 'metric_scores' plot to see the difference
-None
-Bias detected in 2 metrics: TPR, STP
-
-Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.
-
-Ratios of metrics, based on 'White'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)
-                         TPR       ACC  PPV  FPR       STP
-Amer-Indian-Eskimo  0.740385  1.131953  1.0  NaN  0.384615
-Asian-Pac-Islander  1.173077  0.993532  1.0  NaN  1.230769
-Black               0.817308  1.135834  1.0  NaN  0.423077
-Other               0.961538  1.151358  1.0  NaN  0.461538
-
-Warning!
-Take into consideration that NaN's are present, consider checking 'metric_scores' plot to see the difference
-None
-</pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=643811f0b052203e">
 <div class="input">
-<div class="prompt input_prompt">In [117]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">xgboost_fobject_gender_dropped</span><span class="p">,</span> <span class="n">xgboost_fobject_race_dropped</span> <span class="o">=</span> <span class="n">evaluate_model_fairness</span><span class="p">(</span><span class="n">xgb_model_dropped</span><span class="p">,</span> <span class="s1">'XGBClassifierDropped'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'remainder__gender'</span><span class="p">,</span> <span class="s1">'remainder__race'</span><span class="p">])</span>
@@ -14611,119 +13927,90 @@ None
 </div>
 </div>
 </div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Performance of XGBClassifierDropped
-Preparation of a new explainer is initiated
-
-  -&gt; data              : 9769 rows 101 cols
-  -&gt; target variable   : Parameter 'y' was a pandas.Series. Converted to a numpy.ndarray.
-  -&gt; target variable   : 9769 values
-  -&gt; model_class       : xgboost.sklearn.XGBClassifier (default)
-  -&gt; label             : XGBClassifierDropped
-  -&gt; predict function  : &lt;function evaluate_model_fairness.&lt;locals&gt;.classifier_predict_proba at 0x7f41de2701f0&gt; will be used
-  -&gt; predict function  : Accepts pandas.DataFrame and numpy.ndarray.
-  -&gt; predicted values  : min = 0.000379, mean = 0.238, max = 0.998
-  -&gt; model type        : classification will be used (default)
-  -&gt; residual function : difference between y and yhat (default)
-  -&gt; residuals         : min = -0.965, mean = 0.00107, max = 0.999
-  -&gt; model_info        : package xgboost
-
-A new explainer has been created!
-</pre>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=fa0314ddf11361b1"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Bias-mitigation-with-reweighting">Bias mitigation with reweighting<a class="anchor-link" href="#Bias-mitigation-with-reweighting">¶</a></h3>
 </div>
 </div>
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_html rendered_html output_subarea"><div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>recall</th>
-<th>precision</th>
-<th>f1</th>
-<th>accuracy</th>
-<th>auc</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>XGBClassifierDropped</th>
-<td>0.61805</td>
-<td>0.799226</td>
-<td>0.697057</td>
-<td>0.87143</td>
-<td>0.922946</td>
-</tr>
-</tbody>
-</table>
-</div></div>
 </div>
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Bias detected in 2 metrics: FPR, STP
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=73e1deaecc9a30d2">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">dalex.fairness</span> <span class="kn">import</span> <span class="n">reweight</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
 
-Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.
+<span class="n">protected_variable_gender_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="p">[</span><span class="s1">'remainder__gender'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">"male"</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s2">"female"</span><span class="p">)</span>
+<span class="n">protected_variable_gender_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="s1">'remainder__gender'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">"male"</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s2">"female"</span><span class="p">)</span>
 
-Ratios of metrics, based on 'male'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)
-             TPR       ACC       PPV       FPR       STP
-female  0.885533  1.115614  1.011278  0.246377  0.317992
-None
-Bias detected in 3 metrics: TPR, FPR, STP
+<span class="n">id_to_race</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">'Amer-Indian-Eskimo'</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">'Asian-Pac-Islander'</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">'Black'</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">'Other'</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">'White'</span><span class="p">}</span>
+<span class="n">protected_variable_race_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="p">[</span><span class="s1">'remainder__race'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">id_to_race</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+<span class="n">protected_variable_race_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="s1">'remainder__race'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">id_to_race</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
 
-Conclusion: your model is not fair because 2 or more criteria exceeded acceptable limits set by epsilon.
+<span class="n">privileged_group_gender</span> <span class="o">=</span> <span class="s2">"male"</span>
+<span class="n">privileged_group_race</span> <span class="o">=</span> <span class="s2">"White"</span>
 
-Ratios of metrics, based on 'White'. Parameter 'epsilon' was set to 0.8 and therefore metrics should be within (0.8, 1.25)
-                         TPR       ACC       PPV       FPR       STP
-Amer-Indian-Eskimo  0.863563  1.084393  1.248439       NaN  0.370558
-Asian-Pac-Islander  0.998395  0.947977  0.837703  2.056604  1.238579
-Black               0.908507  1.076301  1.084894  0.245283  0.441624
-Other               0.642055  1.057803  0.998752  0.264151  0.309645
+<span class="n">X_test_dropped</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'remainder__gender'</span><span class="p">,</span> <span class="s1">'remainder__race'</span><span class="p">])</span>
 
-Warning!
-Take into consideration that NaN's are present, consider checking 'metric_scores' plot to see the difference
-None
-</pre>
-</div>
+<span class="n">fobjects</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">protected_variable_train</span><span class="p">,</span> <span class="n">protected_variable</span><span class="p">,</span> <span class="n">priviledged_group</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">protected_variable_gender_train</span><span class="p">,</span> <span class="n">protected_variable_race_train</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">protected_variable_gender_test</span><span class="p">,</span> <span class="n">protected_variable_race_test</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">privileged_group_gender</span><span class="p">,</span> <span class="n">privileged_group_race</span><span class="p">],</span>
+        <span class="p">[</span><span class="s1">'gender'</span><span class="p">,</span> <span class="s1">'race'</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Fairness of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="c1"># reweight</span>
+    <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">reweight</span><span class="p">(</span>
+        <span class="n">protected_variable_train</span><span class="p">,</span>
+        <span class="n">y_train</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">model_reweight</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">xgb_model_dropped</span><span class="p">)</span>
+    <span class="n">model_reweight</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_dropped</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
+    <span class="n">explainer_reweight</span> <span class="o">=</span> <span class="n">dx</span><span class="o">.</span><span class="n">Explainer</span><span class="p">(</span>
+        <span class="n">model_reweight</span><span class="p">,</span>
+        <span class="n">X_test_dropped</span><span class="p">,</span>
+        <span class="n">y_test</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s1">'XGBClassifier with Reweight mitigation'</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    
+    <span class="n">display</span><span class="p">(</span><span class="n">explainer_reweight</span><span class="o">.</span><span class="n">model_performance</span><span class="p">())</span>
+    
+    <span class="n">fobject_reweight</span> <span class="o">=</span> <span class="n">explainer_reweight</span><span class="o">.</span><span class="n">model_fairness</span><span class="p">(</span>
+        <span class="n">protected_variable</span><span class="p">,</span>
+        <span class="n">priviledged_group</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">fobject_reweight</span><span class="o">.</span><span class="n">fairness_check</span><span class="p">())</span>
+    
+    <span class="n">fobjects</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fobject_reweight</span>
+    
+</pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=b37cc59211176c47">
 <div class="input">
-<div class="prompt input_prompt">In [118]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.io</span> <span class="k">as</span> <span class="nn">pio</span>
 
-<span class="n">fig_gender</span> <span class="o">=</span> <span class="n">xgboost_fobject_gender</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">random_forest_fobject_gender</span><span class="p">,</span> <span class="n">xgboost_fobject_gender_dropped</span><span class="p">],</span>
+<span class="n">fig_gender</span> <span class="o">=</span> <span class="n">xgboost_fobject_gender</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">random_forest_fobject_gender</span><span class="p">,</span> <span class="n">xgboost_fobject_gender_dropped</span><span class="p">,</span> <span class="n">fobjects</span><span class="p">[</span><span class="s1">'gender'</span><span class="p">]],</span>
                                          <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">autosize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1600</span><span class="p">,</span>
-                                                                   <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+                                                                   <span class="n">height</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span>
                                                                    <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">yanchor</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
                                                                                <span class="n">xanchor</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span>
                                                                                <span class="n">x</span><span class="o">=</span><span class="mf">0.99</span><span class="p">))</span>
 
-<span class="n">fig_race</span> <span class="o">=</span> <span class="n">xgboost_fobject_race</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">random_forest_fobject_race</span><span class="p">,</span> <span class="n">xgboost_fobject_race_dropped</span><span class="p">],</span>
+<span class="n">fig_race</span> <span class="o">=</span> <span class="n">xgboost_fobject_race</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">random_forest_fobject_race</span><span class="p">,</span> <span class="n">xgboost_fobject_race_dropped</span><span class="p">,</span> <span class="n">fobjects</span><span class="p">[</span><span class="s1">'race'</span><span class="p">]],</span>
                                      <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">autosize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1600</span><span class="p">,</span>
-                                                               <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+                                                               <span class="n">height</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span>
                                                                <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">yanchor</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
                                                                            <span class="n">xanchor</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span>
                                                                            <span class="n">x</span><span class="o">=</span><span class="mf">0.99</span><span class="p">))</span>
@@ -14731,22 +14018,6 @@ None
 <span class="n">pio</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="n">fig_gender</span><span class="p">,</span> <span class="s1">'gender_fairness.png'</span><span class="p">)</span>
 <span class="n">pio</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="n">fig_race</span><span class="p">,</span> <span class="s1">'race_fairness.png'</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-Found NaN's or 0's for models: {'RandomForestClassifier'}
-It is advisable to check 'metric_ratios'
-
-Found NaN's or 0's for models: {'RandomForestClassifier', 'XGBClassifier'}
-It is advisable to check 'metric_ratios'
-</pre>
-</div>
 </div>
 </div>
 </div>
