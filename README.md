@@ -11,7 +11,7 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 
 * 2023-10-06  --  Introduction, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/01_introduction.html), [Audio](https://youtu.be/_ORjN-Iy-Ks). Extra reading: [Lipton 2017](https://arxiv.org/abs/1606.03490), [Rudin 2019](https://arxiv.org/abs/1811.10154)
 * 2023-10-13  --  Fairness, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/02_fairness.html), [Audio](https://youtu.be/jGHLpwZVLj4), Extra reading: [Fairness and ML](https://fairmlbook.org/), [Cirillo 2020](https://www.nature.com/articles/s41746-020-0288-5)
-* 2023-10-20  --  LIME and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/03_lime.html)
+* 2023-10-20  --  LIME and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/03_lime.html), [Audio+Video](https://youtu.be/qhV5dOUCVfs), Extra reading: [Why Should I Trust You?](https://arxiv.org/abs/1602.04938), [LORE](https://arxiv.org/abs/1805.10820)
 * 2023-10-27  --  SHAP and friends	 
 * 2023-10-30  --  PROJECT: **First checkpoint** 
 * 2023-11-10  --  PDP and friends		
