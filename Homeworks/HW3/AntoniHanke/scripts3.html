@@ -14641,7 +14641,7 @@ We will be looking at the same models trained in HW1, namely a Random Forest Cla
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="LIME-for-observations">LIME for observations<a class="anchor-link" href="#LIME-for-observations">&#182;</a></h2><h3 id="Random-Forest">Random Forest<a class="anchor-link" href="#Random-Forest">&#182;</a></h3><p>We calculated LIME for the 4 observations outlined before. The results we aggregated and plottted on a single bar graph.</p>
-<p><img src="https://raw.githubusercontent.com/AntekHanke/eXplainableMachineLearning-2024/main/Homeworks/HW3/RF_LIME.png" alt="chart1" title="Chart1"></p>
+<p><img src="https://raw.githubusercontent.com/AntekHanke/eXplainableMachineLearning-2024/main/Homeworks/HW3/AntoniHanke/RF_LIME.png" alt="chart1" title="Chart1"></p>
 <p>Comments:</p>
 <ol>
 <li>Many of the variables used in the LIME explanations overlap, with a similar importance.</li>
@@ -14650,7 +14650,7 @@ We will be looking at the same models trained in HW1, namely a Random Forest Cla
 <li>Keeping the above points in mind, for all 4 observations the same variables are used in the explanation. The only exception is <em>capital_run_length_average&gt;3.71</em> used only for Observation1 in place of the <em>word_freq_meeting</em> variable.</li>
 </ol>
 <h3 id="TabPFN">TabPFN<a class="anchor-link" href="#TabPFN">&#182;</a></h3><p>We calculated LIME for the same 4 observations as before. The results we aggregated and plottted on a single bar graph.</p>
-<p><img src="https://raw.githubusercontent.com/AntekHanke/eXplainableMachineLearning-2024/main/Homeworks/HW3/TabPFN_LIME.png" alt="chart2" title="Chart2"></p>
+<p><img src="https://raw.githubusercontent.com/AntekHanke/eXplainableMachineLearning-2024/main/Homeworks/HW3/AntoniHanke/TabPFN_LIME.png" alt="chart2" title="Chart2"></p>
 <p>Comments:</p>
 <ol>
 <li>As before, many of the variables used in the LIME explanations overlap, with a similar importance.</li>
@@ -14658,7 +14658,7 @@ We will be looking at the same models trained in HW1, namely a Random Forest Cla
 <li>More variables than before are not common to all 4 observations: <em>word_freq_85</em>, <em>char<em>freq</em>%24</em>, <em>capital_run_length_average</em>, <em>word_freq_project</em>, <em>word_freq_addresses</em> - this means TabPFN has a more varied importance structure, where different variables might be important to different observations.</li>
 </ol>
 <h3 id="Comparison-between-RF-and-TabPFN">Comparison between RF and TabPFN<a class="anchor-link" href="#Comparison-between-RF-and-TabPFN">&#182;</a></h3><p>We plotted the LIME explanations for Observation0 and Observation1 of both models to check for differences</p>
-<p><img src="https://raw.githubusercontent.com/AntekHanke/eXplainableMachineLearning-2024/main/Homeworks/HW3/Comparison0.png" alt="chart3" title="Chart3"></p>
+<p><img src="https://raw.githubusercontent.com/AntekHanke/eXplainableMachineLearning-2024/main/Homeworks/HW3/AntoniHanke/Comparison0.png" alt="chart3" title="Chart3"></p>
 <p>Comments:</p>
 <ol>
 <li>Majority of the variables used in the LIME explanations overlap, but sometimes with differences in thresholds (ex. <em>char_freq_24 &gt;</em> 0.05 vs 0.04).</li>
@@ -14666,7 +14666,7 @@ We will be looking at the same models trained in HW1, namely a Random Forest Cla
 <li>Quite a few variables are not common among the two models, for RF: <em>word_freq_free</em>, <em>word_freq_000</em>, <em>word_freq_money</em> and for tabPFN: <em>word_freq_hpl</em>, <em>word_freq_telnet</em>, <em>word_freq_85</em>.</li>
 </ol>
 <p>Below a second comparison of Observation1, which could present similar findings:</p>
-<p><img src="https://raw.githubusercontent.com/AntekHanke/eXplainableMachineLearning-2024/main/Homeworks/HW3/Comparison1.png" alt="chart3" title="Chart3"></p>
+<p><img src="https://raw.githubusercontent.com/AntekHanke/eXplainableMachineLearning-2024/main/Homeworks/HW3/AntoniHanke/Comparison1.png" alt="chart3" title="Chart3"></p>
 
 </div>
 </div>
