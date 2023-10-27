@@ -45,12 +45,12 @@ Grades:
 
 ## Homeworks (0-24 points)
 
- - [Homework 1](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW1)  for 0-4 points. **Deadline: 2023-10-12**
- - [Homework 2](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW2)  for 0-4 points. **Deadline: 2023-10-19** 
- - [Homework 3](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW3)  for 0-4 points. **Deadline: 2023-10-26**
- - [Homework 4](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW4)  for 0-4 points. **Deadline: 2023-11-09**
- - [Homework 5](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW5)  for 0-4 points. **Deadline: 2023-11-16**
- - [Homework 6](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW6)  for 0-4 points. **Deadline: 2023-11-23**
+ - [Homework 1](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW1)  for 0-4 points. **Deadline: 2023-10-12** - graded by HBA
+ - [Homework 2](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW2)  for 0-4 points. **Deadline: 2023-10-19** - graded by  PBI
+ - [Homework 3](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW3)  for 0-4 points. **Deadline: 2023-10-26** - graded by  PBI
+ - [Homework 4](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW4)  for 0-4 points. **Deadline: 2023-11-09** - graded by  HBA
+ - [Homework 5](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW5)  for 0-4 points. **Deadline: 2023-11-16** - graded by  HBA
+ - [Homework 6](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW6)  for 0-4 points. **Deadline: 2023-11-23** - graded by  PBI
 
 ## Project (0-35 points)
 
