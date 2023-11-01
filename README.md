@@ -87,6 +87,7 @@ Examples of directions to look for vulnerability (creativity will be appreciated
 - drift in performance gap between datasets (e.g. another image or text dataset)
 - model malfunction due to an unintendent use
 - wrong behaviour on out-of-distribution samples
+- SATML 2024 competition concerning [CNN Interpretability](https://benchmarking-interpretability.csail.mit.edu/challenges-and-prizes/) based on a NeurIPS 2023 paper [Red Teaming Deep Neural Networks with Feature Synthesis Tools](https://arxiv.org/abs/2302.10894)
 
 The final report will be a short (up to 4 pages) paper in the JMLR template. See [an example](https://github.com/mim-uw/eXplainableMachineLearning-2023/blob/main/Projects/PawelPawlik_MichalSiennicki_AlicjaZiarko/checkpoint3/report.pdf).
 
