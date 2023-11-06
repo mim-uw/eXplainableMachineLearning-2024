@@ -1,0 +1,438 @@
+---
+title: "Shapley values"
+subtitle: "eXplainable AI"
+author: "Przemysław Biecek"
+date: "2023-10-27"
+format:
+  revealjs: 
+    theme: [default]
+    slide-number: true
+    touch: true
+    scrollable: true
+    chalkboard: 
+      buttons: false
+    logo: images/XAI.png
+    footer: eXplainable AI -- Introduction -- MIM UW -- 2023/24
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, out.width="70%", fig.width = 8, fig.height = 5.5)
+```
+
+# Paper of the day
+
+
+
+```{css, echo=FALSE}
+.reveal {
+  font-size: 24px;
+  line-height: 1.6!important;
+}
+code {
+  font-size: 18px!important;
+  line-height: 1.2!important;
+}
+pre {
+  line-height: 1.2!important;
+}
+```
+
+## A Unified Approach to Interpreting Model Predictions
+
+- In this course, you will learn about the main methods and tools related to XAI, but also (and this may be unique) about selected papers and researchers.
+- That's why we will start this and the next classes with a brief presentation of a high-impact article from the XAI field + few words about the author of this article.
+- Today we are talking about Shapley values, so the article of the day will be the 2017 SHAP method article.
+- It will be about the paper [A Unified Approach to Interpreting Model Predictions](https://papers.nips.cc/paper/2017/hash/8a20a8621978632d76c43dfd28b67767-Abstract.html)
+
+<p><img src="images/shap_abstract.png" width="100%"/></p>
+
+
+## SHAP paper in numbers
+
+- This article is really exceptional, it will soon exceed 20,000 citations which is an amazing achievement.
+- The article has several strong points, which we will talk about later today, one of which is the available software that allows you to easily use the described method
+- This software is a shap library, which on GitHub has skyrocketing numbers of stars and downloads
+
+<p><img src="images/shap_popular2.png" width="100%"/></p>
+
+<p><img src="images/shap_popular3.png" width="100%"/></p>
+
+
+## Why SHAP?
+
+- Shapley values are currently the most popular technique for model explanations (almost in each category: local, global, model agnostic, model specific...)
+- if you remember only one method after this course, let it be the SHAP
+- It has more than five years of development. In the list of major XAI methods, you can also find its various extensions like ShapleyFlow or ASV (more about them later)
+- figures below are from the paper [Explainable AI Methods - A Brief Overview](https://link.springer.com/chapter/10.1007/978-3-031-04083-2_2)
+
+<p><img src="images/shap_intro1.png" width="100%"/></p>
+
+<p><img src="images/shap_intro2.png" width="100%"/></p>
+
+
+
+
+## XAI pyramid
+
+- We will use an XAI pyramid to present new methods during this course. 
+- Today we will mainly talk about the method of local explanations - Shapley values, which for a single observation determines the importance of variables.
+
+<p><img src="images/xai_piramide_shap1.png" width="100%"/></p>
+
+- This is one of the three fundamental methods of explaining the behaviour of predictive models.
+- The following three panels introduce these three concepts; we will return to them in one week and two weeks.
+- SHAP corresponds to panel C. We try to explain the behaviour of the model by decomposing the distance between this particular prediction and the average prediction of the model.
+
+<p><img src="images/xai_piramide_shap2.png" width="100%"/></p>
+
+
+
+# Shapley values
+
+
+## Notation
+
+- We have set of $P = \{1, ..., p\}$ players
+- For each coalition, i.e. subset $S	\subseteq P$ we can calculate the payout $v(S)$ and $v(\{\varnothing\}) = 0$
+- We want to fairly distribute the payout $v(P)$
+- Optimal attribution for player $i\in P$ will be denoted as $\phi_i$ 
+
+## Motivational example 1/3
+
+How to divide the reward?
+
+- Three parties A, B and C took part in the election. 
+- As a result of the election, parties A and B each have 49% representation in the parliament and party C has 2% representation. 
+- Let's assume that A and C formed a government. 
+- How to fairly divide the prize (ministries)? 
+- What share of the prize should party C have?
+
+
+Note that any two parties can form a government.  In that case, should the prize for C be equal to or less than that for A?
+
+<p><img src="images/shap_v_01.png" width="100%"/></p>
+
+
+## Motivational example 2/3
+
+Students A, B and C carry out a project together. With this payoff table, determine what portion of the award each student should get.
+
+<p><img src="images/shap_v_02.png" width="100%"/></p>
+
+
+## Motivational example 2/3 cont.
+
+Students A, B and C carry out a project together. With this payoff table, determine what portion of the award each student should get.
+
+<p><img src="images/shap_v_03.png" width="100%"/></p>
+
+
+## Motivational example 3/3
+
+Students A, B and C carry out a project together. With this payoff table, determine what portion of the award each student should get.
+
+<p><img src="images/shap_v_04.png" width="100%"/></p>
+
+## Motivational example 3/3 cont.
+ 
+Students A, B and C carry out a project together. With this payoff table, determine what portion of the award each student should get.
+
+<p><img src="images/shap_v_05.png" width="100%"/></p>
+
+
+
+## Required properties of fair payout
+
+One can define various desirable properties of fair reward distribution. The following seem to be natural (or at least they were for Lord Shapley).
+
+- **Efficiency**: all contributions sum up to the final reward
+
+$$
+\sum_j \phi_j = v(P)
+$$
+
+- **Symmetry**: if players $i$ and $j$ contributed in the same way to each coalition then they get the same reward
+
+$$
+\forall_S v(S \cup \{i\}) = v(S \cup \{j\}) 	\Rightarrow \phi_i = \phi_j
+$$
+
+- **Dummy**: if player $i$ does not contribute then its reward is $0$
+
+$$
+\forall_S v(S \cup \{i\}) = v(S) 	\Rightarrow \phi_i = 0
+$$
+
+- **Additivity**: reward in sum of games $v_1$ and $v_2$ is sum of rewards
+
+$$
+\forall_S v(S) = v_1(S) + v_2(S) 	\Rightarrow \phi_i = \phi_{1,i} + \phi_{2,i} 
+$$
+
+
+## Shapley values (via permutations)
+
+- Fair reward sharing strategy for player $j\in P$ will be denoted as $\phi_j$. Surprise, these are Shapley values.
+- Note that added value of player $j$ to coalition $S$ is $v(S \cup \{j\}) - v(S)$
+- Shapley values are defined as
+
+$$
+\phi_j = \frac{1}{|P|!} \sum_{\pi \in \Pi} (v(S_j^\pi \cup \{j\}) - v(S_j^\pi))
+$$
+
+where $\Pi$ is a set of all possible permutations of players $P$ while $S_j^\pi$ is a set of players that are before player $j$ in permutation $\pi$.
+
+
+- Instead of trying all $\Pi$ permutations one can use only $B$ random permutations to estimate $\phi_j$
+
+$$
+\hat\phi_j = \frac{1}{|B|} \sum_{\pi \in B} (v(S_j^\pi \cup \{j\}) - v(S_j^\pi))
+$$
+
+## Shapley values (via subsets)
+
+<p><img src="images/shap_order.png" width="100%"/></p>
+
+
+- Once you have a given set $S_j^\pi$ of players that are before $j$ in a permutation $\pi$, then the added value of $j$ is the same for all permutations that starts with $S_j^\pi$. There is $(|P| - |S_j^\pi| - 1)!$ of such permutations.
+- Also the order of players in $S_j^\pi$ does not matter as the added value of $j$ is the same for all permutations of $S_j^\pi$. There is $|S_j^\pi|!$ of such orders.
+- Formula for Shapley values can be rewritten in a following way
+
+$$
+\phi_j = \sum_{S \subseteq P / \{j\}}  \frac{|S|! (|P| - |S| - 1)!}{|P|!} (v(S \cup \{j\}) - v(S))
+$$
+
+- The advantage is summing over subsets, of which there are $2^p$ instead of permutations, of which there are $p!$.
+
+
+## Motivational example 3/3 solution
+ 
+Students A, B and C carry out a project together. With this payoff table, determine what portion of the award each student should get.
+
+<p><img src="images/shap_v_05.png" width="100%"/></p>
+
+- Now we can calculate the Shapley values and they will be a fair distribution of the reward between students A, B and C
+
+$$
+\phi_{A} = \frac{1}{6} (10*2 + 20 + 10 + 40*2) = 21 \frac 23
+$$
+
+$$
+\phi_{B} = \frac{1}{6} (30*2 + 40 + 10 + 40*2) = 31 \frac 23
+$$
+
+$$
+\phi_{C} = \frac{1}{6} (50*2 + 50 + 30 + 50*2) = 46 \frac 23
+$$
+
+# Shapley values for Machine Learning Models
+
+## Definitions
+
+- Let's start with local explanations, focused on single point $x$ and the model prediction $f(x)$.
+
+- Now instead of players, you can think about variables. We will distribute a reward between variables to recognize their contribution to the model prediction $f(x)$.
+
+- Reward to be distributed among players:
+
+$$
+f(x) - E f(x)
+$$
+
+. . .
+
+- Payoff value function for coalition $S$
+
+$$
+v(S) = f_S(x_S) - E f(x)
+$$
+where $f_S(x_S)$ is the model prediction maginalized over $P/S$ variables, i.e.
+$$
+f_S(x_S) = \int_{X_{-S}} f(x_S, X_{-S}) dP(X_{-S})
+$$
+
+. . .
+
+- Shapley values via permutations
+
+$$
+\phi_j = \frac{1}{|P|!} \sum_{\pi \in \Pi} v(S_j^\pi \cup \{j\}) - v(S_j^\pi) 
+$$
+
+**Note:** $|P|!$ grows quite fast. $10! = 3 628 800$.  Good news: instead of checking all permutations, one can focus on random $M$ permutations. Also calculation of $f_S(x_S)$ may be computationally heavy for large datasets. But it may be approximated on a subset of observations.
+
+
+## How to understand the value function
+
+- Let's take a look at how the value function works for a set S of players using the Titanic data example and an explanation for the observations age=8, class=1st, fare=72, ....
+- Let's consider the process of conditioning the distribution of data on consecutive variables. In the figure below, we start the prediction distribution for all data, this corresponds to a coalition without players.
+- Then we add the player `age`, which means conditioning the data with the condition `age=8`. Implementation-wise, assuming the independence of the variables, this would correspond to replacing the age value in each observation with the value 8.
+- Next, we add the class variable to the coalition, which means further conditioning the data with the condition `class=1st`. In the next step, we add fare to the coalition, and so on.
+- In the last step, once all the players are in the coalition, that is, all the variables, the model's predictions will reduce to a single point $f(x)$
+
+<p><img src="images/xai_bd_1.png" width="100%"/></p>
+
+- In fact, we are not interested in the distributions of conditional predictions, only in the expected value of these distributions. This is what our value function is.
+
+<p><img src="images/xai_bd_2.png" width="100%"/></p>
+
+- The added value of variable $j$ when added to the coalition $S$ is the change in expected value. In the example below, adding the `class` variable to a coalition with the `age` variable increases the reward by $0.086$.
+
+<p><img src="images/xai_bd_3.png" width="100%"/></p>
+
+## Average of conditional contributions
+
+- The Shapley value is the average after all (or a large number) of the orders in which variables are added to the coalition. 
+- For diagnostic purposes, on graphs, we can also highlight the distribution of added values for different coalitions to get information on how much the effect of a given variable is additive, i.e. leads to the same added value regardless of the previous composition of the coalition.
+
+<p><img src="images/xai_bd_4.png" width="100%"/></p>
+
+
+- Order matters. For a model that allows interactions, it is easy to find an example of a non-additive effect of a variable. How to explain the different effects of the age variable in the figure below?
+
+<p><img src="images/xai_bd_5.png" width="100%"/></p>
+
+
+
+## SHAP values
+
+$$
+\phi_j = \frac{1}{|P|!} \sum_{\pi \in \Pi} v(S_j^\pi \cup \{j\}) - v(S_j^\pi) 
+$$
+
+- The $v(S \cup \{j\}) - v(S)$ may be approximated with $\hat f_{S \cup \{j\}}(x^*) - \hat f_S(x^*)$ where
+
+$$
+\hat f_S(x^*) = \sum_{i=1}^N f(x^*_S, x^i_{-S}) 
+$$
+
+
+- The exact calculation of Shapley values leads to the formula
+
+$$
+\phi_j(x^*) = \frac{1}{N |P|!} \sum_{\pi \in \Pi} \sum_{i=1}^{N}  f(x^*_{S^\pi \cup \{j\}}, x^i_{-S^\pi \cup \{j\}}) - f(x^*_{S^\pi}, x^i_{-S^\pi}) 
+$$
+
+- **Note:** For estimation, one can use an only subset of permutations from $\Pi$ and a subset of observations $\{1, ..., N\}$.
+
+
+## True to the Model or True to the Data?
+
+Chen et al. (2020) agrues that this choice is application dependent.
+
+- Observational conditional expectation (**true to the data**)
+
+$$
+v(S) = E [f(x)|S]
+$$
+
+- Interventional conditional expectation (**true to the model**)
+
+$$
+v(S) = E [f(x)|do(S)]
+$$
+
+
+<p><img src="images/true_data_model.png" width="100%"/></p>
+
+
+## Kernel SHAP 
+
+
+- Accurate calculation of Shapley values is a very time-consuming task. 
+- The Kernel-SHAP method makes it possible to estimate these values at a lower computational cost - and thus faster.
+- You can think of it as an adaptation of the LIME method. The explanation, too, is a linear model approximation of the model in an interpretable feature space.
+- The interpretable variable space is a binary space describing whether a variable enters a coalition or not. If it enters the coalition then we use the value of this variable from the observation being explained. If it doesn't then we sample a value from the dataset in its place.
+- We compute Shapley values by weighted linear regression using an interpretable representation of the variables as input. Linear regression coefficients are estimates of Shapley values.
+
+<p><img src="images/shap_kernel.png" width="100%"/></p>
+
+
+
+## Tree SHAP
+
+Trees have nice structure, it makes them easier to analyse with Shapley values.
+
+For a model that is a weighted sum of trees (bagging, boosting, random forest) the Shapley values for the model are weighted Shapley values for each tree.
+
+Let’s consider a brute force algorithm for a single tree (processing from leaves to the root):
+
+- for a leaf, it returns the value in the leaf,
+- for a node with a variable from S it returns the value of a left or right node given the variable’s value,
+- for a node without a variable from S it returns the weighted average of the left and right nodes.
+
+
+The brute force algorithm has complexity $O(2^m)$
+
+but one can go down to $O(XTLD^2) = O(TLD \cdot XD)$
+
+
+
+## Tree SHAP - an example
+
+- Let’s calculate $val(S)$ for `x = (age: 5, fare:20, sibsp:2)`.
+
+
+<p><img src="images/xai_bd_6.png" width="100%"/></p>
+
+- where
+
+$$
+v(S) = \int_{X_{-S}} f(x_S, X_{-S}) dP(X_{-S}) - E f(x)
+$$
+
+<p><img src="images/xai_bd_6B.png" width="100%"/></p>
+
+
+## From local to global -- Feature importance
+
+- The SHAP method gives local explanations, i.e. explanations for each single observation. But we can convert them to global explanations by aggregating the explanations for individual observations.
+- For example, we can assess the validity of a variable by counting the average modulus of SHAP explanations.
+- Such a measure of the importance of variables does not depend on the model structure and can be used to compare models.
+- Below is an example for the model trained for Titanic data
+
+<p><img src="images/shap_global_3.png" width="100%"/></p>
+
+
+
+## From local to global -- Summary plot
+
+- One of the most useful statistics is a plot summarizing the distribution of Shapley values for the data for each variable.
+- On the OX axis are presented the Shapley values, in the rows are the variables. The color indicates whether an observation had a high or low value in that variable.
+- From the graph you can read which variables are important (they have a large spread of points)
+- You can read what is the relationship between the variable and the Shapley value, whether the color has a monotonic gradation or there are some dependencies
+- You can read the distribution of Shapley values
+
+<p><img src="images/shap_global_2.png" width="100%"/></p>
+
+
+## From local to global -- Dependence plot
+
+- If we plot the Shapley values as functions of the value of the original variable, it is possible to see what kind of relationship exists between this variable and the average result.
+- This type of plots allows you to choose the transformations of the variable, and better understand the relationship between this variable and the result of the model
+
+<p><img src="images/shap_global_4.png" width="100%"/></p>
+
+- We can additionally color the graph depending on one more variable (in the example below, it is gender) to see if an interaction is present in the model. In this case, the attributes of the model will depend on the value of this additional variable.
+
+<p><img src="images/shap_global_5.png" width="100%"/></p>
+
+
+
+# Take-home message
+
+- Shapley's values are based on a concept with roots in **cooperative game theory**
+- We treat **variables as players** who, in coalitions, influence the prediction of the model
+- Shapley's values result in **additive decomposition of the reward** which is $f(x) - E f(x)$
+- Shapley's values can be calculated in a model-agnostic fashion, but for some models (linear models, tree-based models) there are more efficient ways to estimate such values
+- **From local to global**. Based on local explanations, global explanations can be constructed
+- In the explanation, **each variable has attributions**. For models with many variables, this can be a problem
+
+
+# Code-examples
+
+
+- See [Materials at GitHub](https://github.com/mim-uw/eXplainableMachineLearning-2023/Materials)
+
+<p><img src="images/shap_code.png" width="100%"/></p>
+
