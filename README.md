@@ -11,8 +11,8 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 
 * 2023-10-06  --  Introduction, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/01_introduction.html), [Audio](https://youtu.be/_ORjN-Iy-Ks). Extra reading: [Lipton 2017](https://arxiv.org/abs/1606.03490), [Rudin 2019](https://arxiv.org/abs/1811.10154)
 * 2023-10-13  --  Fairness, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/02_fairness.html), [Audio](https://youtu.be/jGHLpwZVLj4), Extra reading: [Fairness and ML](https://fairmlbook.org/), [Cirillo 2020](https://www.nature.com/articles/s41746-020-0288-5)
-* 2023-10-20  --  SHAP and friends	 
-* 2023-10-27  --  LIME and friends	
+* 2023-10-20  --  LIME and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/03_lime.html), [Audio+Video](https://youtu.be/vaXRkcPlJEk), Extra reading: [Why Should I Trust You?](https://arxiv.org/abs/1602.04938), [LORE](https://arxiv.org/abs/1805.10820)
+* 2023-10-27  --  SHAP and friends	 
 * 2023-10-30  --  PROJECT: **First checkpoint** 
 * 2023-11-10  --  PDP and friends		
 * 2023-11-17  --  VIP / MCR	
@@ -65,7 +65,7 @@ This analysis should be carried out for a selected model and the results should 
 
 ### Important dates:
 
-- 2023-11-03 – First checkpoint: Students chose the model, create a plan of work (to be discussed at the classes). Deliverables: 3 min presentation based on one slide. (0-5 points)
+- 2023-10-30 – First checkpoint: Students chose the model, create a plan of work (to be discussed at the classes). Deliverables: 3 min presentation based on one slide. (0-5 points)
 - 2023-12-08 – Second checkpoint: Provide initial experimental results. At least one vulnerability should have been found by now.  (0-10 points)
 - 2023-01-26 - Final checkpoint: Presentation of all identified  vulnerabilities.  (0-20 points)
 
