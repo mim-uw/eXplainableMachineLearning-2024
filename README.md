@@ -21,8 +21,8 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 * 2023-12-08  --  PROJECT: **Second checkpoint** 	
 * 2023-12-15  --  Evaluation of explanations		
 * 2024-01-12  --  	
-* 2024-01-19  --  	
-* 2024-01-26  -- PROJECT: **Final presentation**  / Guest lecture
+* 2024-01-19  --  Guest lecture
+* 2024-01-26  --  PROJECT: **Final presentation**  
 
 ## How to get a good grade
 
