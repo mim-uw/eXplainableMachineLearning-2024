@@ -14,7 +14,7 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 * 2023-10-20  --  LIME and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/03_lime.html), [Audio+Video](https://youtu.be/vaXRkcPlJEk), Extra reading: [Why Should I Trust You?](https://arxiv.org/abs/1602.04938), [LORE](https://arxiv.org/abs/1805.10820)
 * 2023-10-27  --  SHAP and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/04_shap.html#/title-slide), [Audio](https://youtu.be/LquLOs4voWQ), Extra reading: [General Pitfalls of Model-Agnostic Interpretation Methods for Machine Learning Models](https://arxiv.org/abs/2007.04131), [Shapley Flow: A Graph-based Approach to Interpreting Model Predictions](https://arxiv.org/abs/2010.14592)
 * 2023-10-30  --  PROJECT: **First checkpoint** 
-* 2023-11-10  --  PDP and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/06_pdp.html#/title-slide)
+* 2023-11-10  --  PDP and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/06_pdp.html#/title-slide), [Audio](https://youtu.be/Rb-exTcsWmU), Extra reading: [AlePlot](https://academic.oup.com/jrsssb/article/82/4/1059/7056085), [Peeking Inside the Black Box](https://arxiv.org/pdf/1309.6392.pdf)
 * 2023-11-17  --  VIP / MCR	
 * 2023-11-24  --  Explanations specific to neural networks	
 * 2023-12-01  --  Guest lecture
