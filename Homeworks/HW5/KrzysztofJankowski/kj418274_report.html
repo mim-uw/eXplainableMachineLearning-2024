@@ -13094,9 +13094,8 @@ and $$ x_1, x_2 \sim U[-1, 1], \ x_1 = x_2 $$
 We will calculate the PD profile for variable $x_1$ in this model.</p>
 <h3 id="Calculation">Calculation<a class="anchor-link" href="#Calculation">¶</a></h3><p>$$ g_1^{PD}(z) = E_{X_2}[z^2 + 2zx_2 + x_2^2] = $$
 $$ = z^2 + 2zE_{X_2}[x_2] + E_{X_2}[x_2^2] = $$
-$$ = z^2 + 2z \cdot 0 + \frac{2}{3} =  z^2 + \frac{2}{3}$$
-In last steps we used the fact that because $x_1 \sim U[-1, 1]$ then $E_{X_2}[x_2] = 0$ and $E_{X_2}[x_2^2] = \int_{-1}^{1} x_2^2 \cdot f_{X_2}(x_2) \,dx = 2/3$</p>
-</div>
+$$ = z^2 + 2z \cdot 0 + \frac{1}{3} =  z^2 + \frac{1}{3}$$
+In last steps we used the fact that because $x_1 \sim U[-1, 1]$ then $E_{X_2}[x_2] = 0$ and $E_{X_2}[x_2^2] = \int_{-1}^{1} x_2^2 \cdot f_{X_2}(x_2) \,dx_2 = \int_{-1}^{1} \frac{x_2^2}{2} \,dx = \frac{1^3}{6} - \frac{(-1)^3}{6} = 1/3$</p></div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=9ec1f2bc14474806"><div class="prompt input_prompt">
