@@ -1,0 +1,436 @@
+---
+title: "Ceteris Paribus, Partial Dependence and Accumulated Local Effects"
+subtitle: "eXplainable AI"
+author: "Przemysław Biecek"
+date: "2023-11-10"
+format:
+  revealjs: 
+    theme: [default]
+    slide-number: true
+    touch: true
+    scrollable: true
+    chalkboard: 
+      buttons: false
+    logo: images/XAI.png
+    footer: eXplainable AI -- Introduction -- MIM UW -- 2023/24
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, out.width="70%", fig.width = 8, fig.height = 5.5)
+```
+
+# Paper of the day
+
+
+```{css, echo=FALSE}
+.reveal {
+  font-size: 24px;
+  line-height: 1.6!important;
+}
+code {
+  font-size: 18px!important;
+  line-height: 1.2!important;
+}
+pre {
+  line-height: 1.2!important;
+}
+```
+
+## Visualizing the effects of predictor variables
+
+- Today we will talk about CP, PD, and ALE methods. The last one was introduced in [Visualizing the effects of predictor variables in black box supervised learning models](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/rssb.12377) by Daniel Apley and Jingyu Zhu
+
+<p><center><img src="images/ale_abstract.png" width="80%"/></center></p>
+
+
+## ALE paper in numbers
+
+- The ALE paper was published on arXiv since 2016
+- Now (2023) it has 869 citations, which is a very high number considering it theoretical character
+- The paper introduced a new ALE method for model explanation but also shown consequences of unrealistic assumptions (like independence) over calculation of explanations. It leads the discussion about trade off between correctness of explanations and complexity of explanations.
+
+<p><img src="images/ale_popular.png" width="100%"/></p>
+
+
+
+## XAI pyramid
+
+- Thinking about the XAI pyramid, we will go to the third level of the pyramid, level related to profile explanations. 
+- We will focus on explanations for a single variable but all presented methods may be extended to two or more variables.
+
+<p><center><img src="images/XAI_pdp.png" width="80%"/></center></p>
+
+## What we are going to explain
+
+- CP, PD, and ALE methods are based on one of the three fundamental approaches to explanation of predictive models.
+- Methods that will be discussed today correspond to panel A -- tracing model response along changes in a single variable to get some understanding about black-box model behavior around $x$
+
+<p><center><img src="images/xai_piramide_shap2.png" width="70%"/></center></p>
+
+
+# Motivation
+
+- Let's assume that we have a two-dimensional model response surface. 
+- Here is an example for Titanic data and variables `age` and `class`. This is the real model response surface for a logistic regression model with splines. 
+
+```{r, echo=FALSE}
+load("~/GitHub/ema/archivist_20200730.rda")
+
+library(ggplot2)
+library(DALEX)
+theme_ema <- theme(text = element_text(color = "black", size = 12),
+                   plot.title = element_text(color = "black", size = 14, hjust = 0), 
+                   plot.subtitle = element_text(color = "black", hjust = 0), 
+                   axis.text = element_text(color = "black", size = 12), 
+                   axis.text.x = element_text(color = "black", size = 12), 
+                   axis.text.y = element_text(color = "black", size = 12), 
+                   axis.title = element_text(color = "black", size = 12), 
+                   legend.text = element_text(color = "black", size = 12), 
+                   strip.text = element_text(color = "black", size = 12, hjust = 0))
+
+
+age <- rep(0:100, each = 5)
+class <- rep(c(3,2,1,4,5,6,7), each = 80)
+ac <- expand.grid(age, class)
+achenry <- henry[rep(1,nrow(ac)),]
+achenry$age <- ac$Var1
+achenry$class <- levels(titanic$class)[ac$Var2]
+
+library("rms")
+explain_lmr <- archivist::aread("pbiecek/models/2b9b6")
+
+achenry$predict <- predict(explain_lmr, achenry)
+
+library(plotly)
+acmat <- matrix(achenry$predict, ncol = length(class))
+p <- plot_ly(z = ~acmat) %>% add_surface()
+p
+
+```
+
+## What-if?
+
+- when explaining anything, one of the most natural questions is: *,,what would happen if the input changes''*. 
+- Note that neither LIME nor SHAP do not directly answer this question. They indicate an importance of some variables, but there is no answer of what would happen if a variable increases/decreases.
+- For high-dimensional models we are not able to keep track of all possible changes, but we can look towards one or two variables.
+- Here is an example of such local explanations. Continuous variable on the left. Categorical variable on the right.
+
+<p><center><img src="images/profile_age_class.png" width="70%"/></center></p>
+
+
+# Ceteris Paribus 
+
+## Ceteris Paribus in action
+
+Sound like a spell from Harry Potter?
+
+- *Ceteris paribus* is a Latin phrase, meaning ,,all other things being equal'' or ,,all else unchanged'', [see Wikipedia](https://en.wikipedia.org/wiki/Ceteris_paribus).
+
+- It is a function defined for model $f$, observation $x$, and variable $j$ as:
+
+\begin{equation}
+h^{f}_{x,j}(z) = f\left(x_{j|=z}\right),
+\end{equation}
+
+where $x_{j|=z}$ stands for observation $x$ with $j$-th coordinate replaced by value $z$.
+
+- The Ceteris Paribus profile is a function that describes how the model response would change if $j$-th variable will be changed to $z$  while values of all other variables are kept fixed at the values specified by $x$. 
+
+- In the implementation we cannot check all possible z's, we have to meaningfully select a subset of them, we will come back to this later.
+
+- Note that CP profiles are also commonly referred as *Individual Conditional Expectation (ICE) profiles*. This is a common name but might be misleading if the model does not predict the expected value.
+
+## Ceteris Paribus - Many variables
+
+- No one wants to check CP profiles for all possible variables (of which there can be hundreds) but only for those in which 'something is happening'. These variables can be identified based on amplitude of oscillations.
+
+<p><center><img src="images/pdp_variables.png" width="60%"/></center></p>
+
+## Ceteris Paribus - Many models
+
+- CP profile is a convenient tool for comparing models.
+- It can be particularly useful for comparing models from different families, e.g. tree vs. linear; flexible vs. rigid; regularised vs. interpolating edges (more on this later).
+
+<p><center><img src="images/pdp_models.png" width="70%"/></center></p>
+
+
+## Ceteris Paribus - Pros and cons 
+
+**Pros**
+
+- Easy to communicate, and extendable approach to model exploration.
+- Graphical representation is easy to understand and explain.
+- CP profiles are easy to compare, as we can overlay profiles for two or more models to better understand differences between the models.
+
+**Cons**
+
+- May lead to out-of-distribution problems if correlated explanatory variables are present. In this case application of the ceteris-paribus principle may lead to unrealistic settings and misleading results.
+- Think about prediction of an apartment’s price and correlated variables like no. rooms and surface area. You cannot change no. rooms freely keeping the surface constant.
+- Will not explain high-order interactions. Pairwise interactions require the use of two-dimensional CP and so on.
+- For models with hundreds or thousands of variables, the number of plots to inspect grow with number of variables.
+
+
+# Partial Dependence 
+
+## Partial Dependence - intutition
+
+- As with other explanations, we can aggregate local explanations to get a global view of how the model works.
+- Let's average Ceteris Paribus profiles.
+
+<p><center><img src="images/pdp_avg.png" width="80%"/></center></p>
+
+## Partial Dependence in action
+
+- Introduced in 2001 in the paper *Greedy Function Approximation: A Gradient Boosting Machine*. [Jerome Friedman. The Annals of Statistics 2001](https://www.jstor.org/stable/2699986)
+- Ceteris Paribus averaged profile following marginal distribution of variables $X^{-j}$.
+
+$$
+g^{PD}_{j}(z) = E_{X_{-j}}  f(X_{j|=z}) .
+$$
+
+
+- The estimation is based on the average of the CP profiles. 
+- The computational complexity is $N \times Z$ model evaluations, where $N$ is the number of observations and $Z$ is the number of points at which the CP profile is calculated (*how to select these points?*).
+
+$$
+\hat g^{PD}_{j}(z) =  \frac{1}{n} \sum_{i=1}^{n} f(x^i_{j|=z}).
+$$
+
+## Partial Dependence, an example
+
+Let's consider a simple linear regression model
+
+$$
+f(x) = \hat \mu + \hat \beta_1 x_1 + \hat \beta_2 x_2.
+$$
+Then we have
+
+$$
+g_{PD}^{1}(z) = E_{X_2} [\hat \mu + \hat \beta_1 z + \hat \beta_2 x_2] = 
+$$
+$$
+ \hat \mu + \hat \beta_1 z + \hat \beta_2 E_{X_2} [x_2] = 
+$$
+$$
+\hat \beta_1 z + c
+$$
+
+
+# Marginal Effects
+
+## Marginal Effects - introduction
+
+- PD profiles are easy to explain, but unfortunately they inherit the disadvantages of CP profiles that average out.
+- One of these problems is that they are averaging over a marginal distribution, which may not be realistic.
+
+**What is the problem?** 
+
+- Consider two variables $x_1$ and $x_2$ which are highly correlated (see next slide). 
+- If we calculate a profile for $f$ at $x_1=0.4$, we average the model response over the marginal distribution of $X_2$. 
+- However, it might make more sense to average this model response after the conditional distribution $X_2 | x_1=0.4$.
+
+---
+
+Marginal distribution of $X_2$ on the left and conditional distribution of $X_2|x_1=0.4$ on the right.
+
+<p><img src="images/pdp_mprofile.png" width="100%"/></p>
+
+
+## Marginal Effects in action
+
+- Ceteris Paribus averaged over conditional distribution of variables $X^{-j}|x^j=z$.
+
+$$
+g^{MP}_{j}(z) = E_{X_{-j}|x_j=z}  f(x_{j|=z}) .
+$$
+
+- Note that, in general, the estimation of the conditional distribution $X_{-j}|x^j=z$ can be difficult. 
+- One of the possible approaches: divide the variable $x_j$ into $k$ intervals. And then estimate $X_{-j}|x_j=z$ as the joint empirical distribution of observations $i \in N(x_j)$, i.e. for which $x^j$ falls into the same interval.
+
+$$
+\hat g^{MP}_{j}(z) = \frac{1}{|N(x_j)|} \sum_{i \in N(x_j)}   f(x^i_{j|=z}).
+$$
+
+<p><center><img src="images/pdp_mprofile2.png" width="80%"/></center></p>
+
+
+## Marginal Effects, an example
+
+Let's consider a simple linear regression model
+
+$$
+f(x) = \hat \mu + \hat \beta_1 x_1 + \hat \beta_2 x_2,
+$$
+
+with $X_1 \sim \mathcal U[0,1]$, while $x_2=x_1$ (perfect correlation).
+
+Then we have
+
+$$
+g^{MP}_{1}(z) = E_{X_2|x_1=z} [\hat \mu + \hat \beta_1 z + \hat \beta_2 x_2] = 
+$$
+$$
+\hat \mu + \hat \beta_1 z + \hat \beta_2 E_{X_2|x_1=z} [x_2] = 
+$$
+$$
+(\hat \beta_1 + \hat \beta_2) z + c
+$$
+
+# Accumulated Local Effects
+
+## Accumulated Local Effects - introduction
+
+- We have solved one problem, two new problems have emerged.
+
+- As we saw in the previous example, marginal effects carry the cummulative effect of all correlated variables. But is this what we wanted?
+
+- No. We want to take correlations into account, but distil the individual contribution of the variable $x_j$. For this we will use *Accumulated Local Effects*.
+
+## Accumulated Local Effects in action
+
+- The key idea behind ALE profiles is to track the local curvature of the model, which can be captured by the model derivative. 
+- These derivatives are shifted and averaged according to the conditional distribution $X^{-j}|X^j=z$. 
+- They are then accumulated so as to reproduce the effect of the variable $x_j$.
+
+
+$$
+g^{AL}_{j}(z) = \int_{z_0}^z \left[E_{X_{-j}|x_j=v} 
+\frac{\partial f(x)}{\partial x_j}  \right] dv .
+$$
+- As before, estimating the conditional distribution is difficult. We can deal with it by using a similar trick with $k$ segments of the variable $x_j$.
+- Let $k_j(x)$ denote the interval in which the observation $x$ is located in respect to the variable $j$.
+- We will accumulate local model changes on the interval$[z^{k-1}_j, z^k_j]$.
+
+$$
+\hat g^{AL}_{j}(z) = \sum_{k=1}^{k_j(x)} \frac{1}{|N_j(k)|}
+\sum_{i:x_{i,j} \in N_j(k)} [f(x_{j|=z^k_j}) - f(x_{j|=z^{k-1}_j})] + c.
+$$
+
+<p><center><img src="images/pdp_mprofile3.png" width="80%"/></center></p>
+
+
+## Accumulated Local Effects, an example 
+
+
+Let's consider a simple linear regression model
+
+$$
+f(x) = \hat \mu + \hat \beta_1 x_1 + \hat \beta_2 x_2,
+$$
+
+with $X_1 \sim \mathcal U[0,1]$, while $x_2=x_1$ (perfect correlation).
+
+Then we have
+
+$$
+g^{AL}_{1}(z) = \int_0^z E_{X_2|x_1=v} \frac{\partial ( \hat \mu + \hat \beta_1 x_1 + \hat \beta_2 x_2)}{\partial x_1} dv + c= 
+$$
+$$
+\int_0^z E_{X_2|x_1=v} \hat \beta_1 dv  +c = 
+$$
+$$
+\int_0^z \hat \beta_1 dv +c = 
+$$
+$$
+\hat \beta_1 z + c
+$$
+
+
+## How they are different? 1/2
+
+Let's consider a following model
+
+$$
+f(x_1, x_2) = (x_1 +1)  x_2
+$$
+
+where $X^1 \sim \mathcal U[-1,1]$ and $x_1=x_2$. 
+
+
+- Ceteris Paribus
+
+$$
+h^1_{CP}(z) = (z+1)x_2
+$$
+
+- Partial Dependence
+
+$$
+g^1_{PD}(z) = E_{X_2} (z+1)x_2 = 0
+$$
+
+- Marginal Effects
+
+$$
+g_1^{MP}(z) = E_{X_2|x_1=z} (z+1)x_2 = z(z+1)
+$$
+
+- Accumulated Local Effects
+
+$$
+g_1^{AL}(z) = \int_{-1}^z E_{X_2|x_1=v} \frac{\partial (x_1+1)x_2}{\partial x_1} dv = \int_{-1}^z E_{X_2|x_1=v} x_2 dv = 
+$$
+$$
+\int_{-1}^z v dv =  (z^2  - 1)/2
+$$
+
+## How they are different? 2/2
+
+Let's explain the model with a following sample
+
+
+| i     | 1  |     2 |     3 |     4 |     5 |     6 |     7 |  8  |
+|-------|----|-------|-------|-------|-------|-------|-------|-----|
+| $X^1$ | -1 | -0.71 | -0.43 | -0.14 |  0.14 |  0.43 |  0.71 |  1  |
+| $X^2$ | -1 | -0.71 | -0.43 | -0.14 |  0.14 |  0.43 |  0.71 |  1  |
+| $y$   | 0  | -0.2059 | -0.2451 | -0.1204 |  0.1596 |  0.6149 |  1.2141 |  2  |
+
+The figure below summaries differences between PD, ME and ALE.
+
+<p><center><img src="images/CP_ALL.png" width="80%"/></center></p>
+
+
+# Local Effects - Examples
+
+## Groups of Local Effects
+
+- The global explanation is an aggregation of local CP profiles. 
+- But we don't need to average by all observations, we can average by groups. 
+- How do we define these groups? E.g. based on the value of another variable.
+- Profiles constructed in this way help to identify interactions between variables.
+
+<p><center><img src="images/pdp_cluster2.png" width="60%"/></center></p>
+
+
+## Clustering of Local Effects
+
+- Or one can cluster CP profiles and calculate average over clusters.
+
+<p><center><img src="images/pdp_cluster1.png" width="60%"/></center></p>
+
+
+## Covid example
+
+- The figure below shows PD profiles calculated on real Covid-19 mortality data from year 2020 in Poland.
+- Presented are the results of two models, logistic regression with splines (GLM) and the XGBoost tree model. 
+- PDP profiles are calculated separately according to whether the patient had comorbidities or not. Differences in mortality can be read from the plot.
+- What makes it possible to compare the models?
+ 
+<p><center><img src="images/pdp_covid.png" width="60%"/></center></p>
+
+[Data and models](https://betaandbit.github.io/RML/)
+
+# Take-home message
+
+- *Ceteris Paribus* profiles allow exploration of the model around a specific point. They answer the question of **what if**. 
+- *Partial Dependence* aggregates the results of **individual profiles into a global profile**. They are easy to explain, but can be misleading when there are interactions or correlated variables.
+- *Marginal Effects* take correlated variables into account, but accumulate the effect of multiple variables in the profile. This is usually undesirable behavior.
+- *Accumulated Local Effects* take into account correlations between variables but **distills the individual effect of a selected variable**.
+
+
+# Code-examples
+
+- See [Materials at GitHub](https://mim-uw.github.io/eXplainableMachineLearning-2023/hw4_cp_and_pdp_with_xgboost_on_titanic.html)
+
+<p><img src="images/pdp_code.png" width="100%"/></p>
+

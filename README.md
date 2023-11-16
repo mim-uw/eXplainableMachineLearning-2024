@@ -11,18 +11,18 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 
 * 2023-10-06  --  Introduction, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/01_introduction.html), [Audio](https://youtu.be/_ORjN-Iy-Ks). Extra reading: [Lipton 2017](https://arxiv.org/abs/1606.03490), [Rudin 2019](https://arxiv.org/abs/1811.10154)
 * 2023-10-13  --  Fairness, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/02_fairness.html), [Audio](https://youtu.be/jGHLpwZVLj4), Extra reading: [Fairness and ML](https://fairmlbook.org/), [Cirillo 2020](https://www.nature.com/articles/s41746-020-0288-5)
-* 2023-10-20  --  LIME and friends	
-* 2023-10-27  --  SHAP and friends	 
+* 2023-10-20  --  LIME and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/03_lime.html), [Audio+Video](https://youtu.be/vaXRkcPlJEk), Extra reading: [Why Should I Trust You?](https://arxiv.org/abs/1602.04938), [LORE](https://arxiv.org/abs/1805.10820)
+* 2023-10-27  --  SHAP and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/04_shap.html#/title-slide), [Audio](https://youtu.be/LquLOs4voWQ), Extra reading: [General Pitfalls of Model-Agnostic Interpretation Methods for Machine Learning Models](https://arxiv.org/abs/2007.04131), [Shapley Flow: A Graph-based Approach to Interpreting Model Predictions](https://arxiv.org/abs/2010.14592)
 * 2023-10-30  --  PROJECT: **First checkpoint** 
-* 2023-11-10  --  PDP and friends		
+* 2023-11-10  --  PDP and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/06_pdp.html#/title-slide), [Audio](https://youtu.be/Rb-exTcsWmU), Extra reading: [AlePlot](https://academic.oup.com/jrsssb/article/82/4/1059/7056085), [Peeking Inside the Black Box](https://arxiv.org/pdf/1309.6392.pdf)
 * 2023-11-17  --  VIP / MCR	
 * 2023-11-24  --  Explanations specific to neural networks	
 * 2023-12-01  --  Guest lecture
 * 2023-12-08  --  PROJECT: **Second checkpoint** 	
 * 2023-12-15  --  Evaluation of explanations		
 * 2024-01-12  --  	
-* 2024-01-19  --  	
-* 2024-01-26  -- PROJECT: **Final presentation**  / Guest lecture
+* 2024-01-19  --  Guest lecture
+* 2024-01-26  --  PROJECT: **Final presentation**  
 
 ## How to get a good grade
 
@@ -45,12 +45,12 @@ Grades:
 
 ## Homeworks (0-24 points)
 
- - [Homework 1](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW1)  for 0-4 points. **Deadline: 2023-10-12**
- - [Homework 2](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW2)  for 0-4 points. **Deadline: 2023-10-19** 
- - [Homework 3](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW3)  for 0-4 points. **Deadline: 2023-10-26**
- - [Homework 4](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW4)  for 0-4 points. **Deadline: 2023-11-09**
- - [Homework 5](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW5)  for 0-4 points. **Deadline: 2023-11-16**
- - [Homework 6](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW6)  for 0-4 points. **Deadline: 2023-11-23**
+ - [Homework 1](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW1)  for 0-4 points. **Deadline: 2023-10-12** - graded by HBA
+ - [Homework 2](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW2)  for 0-4 points. **Deadline: 2023-10-19** - graded by  PBI
+ - [Homework 3](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW3)  for 0-4 points. **Deadline: 2023-10-26** - graded by  PBI
+ - [Homework 4](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW4)  for 0-4 points. **Deadline: 2023-11-09** - graded by  HBA
+ - [Homework 5](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW5)  for 0-4 points. **Deadline: 2023-11-16** - graded by  HBA
+ - [Homework 6](https://github.com/mim-uw/eXplainableMachineLearning-2024/tree/main/Homeworks/HW6)  for 0-4 points. **Deadline: 2023-11-23** - graded by  PBI
 
 ## Project (0-35 points)
 
@@ -65,7 +65,7 @@ This analysis should be carried out for a selected model and the results should 
 
 ### Important dates:
 
-- 2023-11-03 – First checkpoint: Students chose the model, create a plan of work (to be discussed at the classes). Deliverables: 3 min presentation based on one slide. (0-5 points)
+- 2023-10-30 – First checkpoint: Students chose the model, create a plan of work (to be discussed at the classes). Deliverables: 3 min presentation based on one slide. (0-5 points)
 - 2023-12-08 – Second checkpoint: Provide initial experimental results. At least one vulnerability should have been found by now.  (0-10 points)
 - 2023-01-26 - Final checkpoint: Presentation of all identified  vulnerabilities.  (0-20 points)
 
@@ -87,6 +87,7 @@ Examples of directions to look for vulnerability (creativity will be appreciated
 - drift in performance gap between datasets (e.g. another image or text dataset)
 - model malfunction due to an unintendent use
 - wrong behaviour on out-of-distribution samples
+- SATML 2024 competition concerning [CNN Interpretability](https://benchmarking-interpretability.csail.mit.edu/challenges-and-prizes/) based on a NeurIPS 2023 paper [Red Teaming Deep Neural Networks with Feature Synthesis Tools](https://arxiv.org/abs/2302.10894)
 
 The final report will be a short (up to 4 pages) paper in the JMLR template. See [an example](https://github.com/mim-uw/eXplainableMachineLearning-2023/blob/main/Projects/PawelPawlik_MichalSiennicki_AlicjaZiarko/checkpoint3/report.pdf).
 
