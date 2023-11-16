@@ -39,7 +39,7 @@ $$ g_{1}^{AL}(z) = \int_{-1}^{z} E_{X_2|x_1=v} \frac{\partial (x_1+x_2)^2}{\part
 ```{r point_0, echo=ifelse(show_all, show_all, FALSE)}
 # 0. For the selected data set, train at least one tree-based ensemble model, e.g. random forest, gbdt, xgboost.
 
-setwd("C:/Projects/MIMUW/xai/fork/eXplainableMachineLearning-2024/Homeworks/HW5")
+setwd("C:/Projects/MIMUW/xai/fork/eXplainableMachineLearning-2024/Homeworks/HW5/PiotrGolach")
 
 dataset = "SpeedDating.csv"
 repo_url = "https://raw.githubusercontent.com/adrianstando/imbalanced-benchmarking-set/main/datasets/"
