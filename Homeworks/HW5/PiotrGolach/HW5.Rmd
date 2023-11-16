@@ -32,8 +32,6 @@ $$ = z^2 + 2z E_{X_2|x_1=z} (x_2 + x_{2}^2) = z^2 + 2z E_{X_2|x_1=z} (x_1 + x_{1
 
 $$ g_{1}^{AL}(z) = \int_{-1}^{z} E_{X_2|x_1=v} \frac{\partial (x_1+x_2)^2}{\partial x_1} dv = \int_{-1}^{z} E_{X_2|x_1=v} \frac{\partial (x_1^2+2x_1x_2+x_2^2)}{\partial x_1} dv = $$ $$ = \int_{-1}^{z} E_{X_2|x_1=v}(2x_1+2x_2) dv = \int_{-1}^{z} (2v+E_{X_2|x_1=v} 2x_2) dv = \int_{-1}^{z} (4v) dv = 2v^2|^{z}_{-1} +c= 2z^2 - (2(-1)^2) = 2z^2-2 $$
 
-$c_1$ and $c_2$ are some constants.
-
 ## Task 2
 
 #### Confusion table for xgboost on test dataset and first two predictions.
