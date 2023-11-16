@@ -15,7 +15,7 @@ Submit the homework to this directory.
 ## Task A
 
 For the selected models, prepare a knitr/jupyter notebook based on the following points (you can use models created in Homework 1).
-Submit your results on GitHub to the directory `Homeworks/HW2`.
+Submit your results on GitHub to the directory `Homeworks/HW4`.
 
 1. Train a tree-based ensemble model on the selected dataset; it can be one of random forest, GBM, CatBoost, XGBoost, LightGBM (various types) etc.
 2. Select two observations from the dataset and calculate the model's prediction.
