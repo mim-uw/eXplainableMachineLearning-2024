@@ -191,7 +191,10 @@ From [All Models are Wrong, but Many are Useful](https://arxiv.org/abs/1801.0148
 
 ## No free variable importance (1/2)
 
-Problem solved? Not really. Summary of critique of this approach is presented in* Unrestricted permutation forces extrapolation: variable importance requires at least one more model, or there is no free variable importance* 2021 Statistics and Computing (2021)  https://doi.org/10.1007/s11222-021-10057-z
+Problem solved? 
+Not really. 
+
+Summary of critique of this approach is presented in *Unrestricted permutation forces extrapolation: variable importance requires at least one more model, or there is no free variable importance* 2021 Statistics and Computing (2021)  https://doi.org/10.1007/s11222-021-10057-z
 
 Consider following scenario
 
@@ -286,8 +289,7 @@ What if we have different models with the same fit to the data?
 
 <p><center><img src="images/rashomon_q_2.png" width="80%"/></center></p>
 
-
-Performance is not enough: the story told by a Rashomon quartet. 2023 https://arxiv.org/pdf/2302.13356.pdf
+Images from: *Performance is not enough: the story told by a Rashomon quartet* 2023. https://arxiv.org/pdf/2302.13356.pdf
 
 
 ## Rashomon's perspective: open questions
