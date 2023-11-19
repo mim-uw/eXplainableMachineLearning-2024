@@ -4,6 +4,7 @@
 
 Winter semester 2023/24 [@pbiecek](https://github.com/pbiecek) [@hbaniecki](https://github.com/hbaniecki)
 
+Previous year: https://github.com/mim-uw/eXplainableMachineLearning-2023
 
 ## Meetings
 
