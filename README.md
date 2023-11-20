@@ -17,11 +17,11 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 * 2023-10-30  --  PROJECT: **First checkpoint** 
 * 2023-11-10  --  PDP and friends, [Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/06_pdp.html#/title-slide), [Audio](https://youtu.be/Rb-exTcsWmU), Extra reading: [AlePlot](https://academic.oup.com/jrsssb/article/82/4/1059/7056085), [Peeking Inside the Black Box](https://arxiv.org/pdf/1309.6392.pdf)
 * 2023-11-17  --  VIP / MCR	[Slides](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mim-uw/eXplainableMachineLearning-2024/main/Lectures/05_vip.html#/title-slide), [Audio](https://youtu.be/jn7xOb0SLWg), Extra reading: [The Two Cultures](http://www2.math.uu.se/~thulin/mm/breiman.pdf), [More models](https://doi.org/10.1007/s11222-021-10057-z), [Rashomon quartet](https://arxiv.org/pdf/2302.13356.pdf)
-* 2023-11-24  --  Explanations specific to neural networks	
+* 2023-11-24  --  Explanations specific to neural networks & Evaluation of explanations	
 * 2023-12-01  --  Guest lecture
 * 2023-12-08  --  PROJECT: **Second checkpoint** 	
-* 2023-12-15  --  Evaluation of explanations		
-* 2024-01-12  --  	
+* 2023-12-15  --  Adversarial XAI
+* 2024-01-12  --  Student presentations	
 * 2024-01-19  --  Guest lecture
 * 2024-01-26  --  PROJECT: **Final presentation**  
 
