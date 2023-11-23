@@ -1,0 +1,435 @@
+---
+title: "HW5 in R Markdown"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
+show_all=FALSE
+```
+
+## Task 1
+
+We are given:
+
+$$ f(x_1, x_2) = (x_1 + x_2)^2 $$
+
+$x_1, x_2 \sim U[-1,1]$ and $x_1 = x_2$ ($x_2$ full dependency).
+
+### Partial Dependence profile (PD) for $x_1$
+
+$$ g^{1}_{PD}(z) = E_{X_2} f(z, x_2) = E_{X_2} (z + x_2)^2= E_{X_2} (z^2 + 2zX_2+X_{2}^2) = z^2 + 0 + \frac{(1-(-1))^2}{12} = x^2+\frac{1}{3} $$
+
+### Marginal Effect (ME) for $x_1$
+
+$$ g^{1}_{ME}(z) = E_{X_2|x_1=z} f(x_1, x_2) = E_{X_2|x_1=z} (x_1^{2}+2x_1x_2+ x_{2}^{2})  = $$
+
+$$ = z^2 + 2z E_{X_2|x_1=z} (x_2 + x_{2}^2) = z^2 + 2z E_{X_2|x_1=z} (x_1 + x_{1}^2) = z^2 + 2z^2 + z^2 = 4z^2 $$
+
+### Accumulated Local Effect (ALE) Profile dla $x_1$
+
+$$ g_{1}^{AL}(z) = \int_{-1}^{z} E_{X_2|x_1=v} \frac{\partial (x_1+x_2)^2}{\partial x_1} dv = \int_{-1}^{z} E_{X_2|x_1=v} \frac{\partial (x_1^2+2x_1x_2+x_2^2)}{\partial x_1} dv = $$ $$ = \int_{-1}^{z} E_{X_2|x_1=v}(2x_1+2x_2) dv = \int_{-1}^{z} (2v+E_{X_2|x_1=v} 2x_2) dv = \int_{-1}^{z} (4v) dv = 2v^2|^{z}_{-1} +c= 2z^2 - (2(-1)^2) = 2z^2-2 $$
+
+## Task 2
+
+#### Confusion table for xgboost on test dataset and first two predictions.
+
+```{r point_0, echo=ifelse(show_all, show_all, FALSE)}
+# 0. For the selected data set, train at least one tree-based ensemble model, e.g. random forest, gbdt, xgboost.
+
+setwd("C:/Projects/MIMUW/xai/fork/eXplainableMachineLearning-2024/Homeworks/HW5/PiotrGolach")
+
+dataset = "SpeedDating.csv"
+repo_url = "https://raw.githubusercontent.com/adrianstando/imbalanced-benchmarking-set/main/datasets/"
+
+if(!file.exists(dataset)){
+  data <- read.csv(paste0(repo_url, dataset), row.names="X")
+  write.csv(x=data, file=dataset)
+}else{
+  data <- read.csv(dataset, row.names="X")
+}
+
+### train xgb
+set.seed(42)
+
+data <- data[sample(1:NROW(data)),]
+train <- data[1:800,]
+test <- data[801:NROW(data),]
+
+# convert to DMatix object
+library(xgboost, quietly=TRUE)
+dtrain <- xgb.DMatrix(data = as.matrix(train)[,1:(NCOL(train)-1)], 
+                      label = train$TARGET)
+dtest <- xgb.DMatrix(data = as.matrix(test)[,1:(NCOL(test)-1)], 
+                     label = test$TARGET)
+
+params <- list(
+  booster = "gbtree",
+  objective = "binary:logistic",
+  eta = 0.3,
+  max_depth = 6
+)
+
+xgb_model <- xgb.train(
+  params = params,
+  data = dtrain,
+  nrounds = 100,
+  verbose=2
+)
+
+# 1. Calculate the predictions for some selected observations.
+predictions <- predict(xgb_model, dtest)
+
+predictions_binary <- ifelse(predictions > 0.5, 1, 0)
+
+table(predictions_binary, test$TARGET)
+
+df_predictions <- data.frame(id=rownames(test), 
+                             predictions, 
+                             predictions_binary, 
+                             TARGET=test$TARGET)
+
+print(head(df_predictions, 2))
+```
+
+#### Custom implementation of Ceteris Paribus profiles generation
+
+```{r cp1, echo=ifelse(show_all, show_all, FALSE)}
+# 2. Then, calculate the what-if explanations of these predictions using Ceteris Paribus profiles (also called What-if plots), e.g. in Python: AIX360, Alibi dalex, PDPbox; in R: pdp, DALEX, ALEplot. *implement CP yourself for a potential bonus point
+```
+
+```{r cp2, echo=TRUE}
+
+#' @param model A trained model object with dedicated the `predict` method
+#' @param dataset A data frame containing the dataset used to train the model.
+#' @param observations A data frame with selected observations for which CP profiles are to be generated.
+#' @param n_points Number of points to generate within the range of the variable. Default is 100.
+#' @param variable The name of the variable for which CP profiles are to be generated.
+#' @param target_var Binary target variable.
+#' @param plot_cp Boolean - if true plot CP profile.
+#' @param add_marker Boolean variable - if true add marker CP profile.
+#' @return List consisting of variable sequence, df with CP profiles and original variable values from `observations`.
+cp <- function(model, dataset, observations, n_points=100, variable=NULL, 
+               target_var="TARGET", plot_cp=FALSE, add_marker=TRUE){
+  
+  if(is.null(variable) || !(variable %in% names(dataset))){
+    stop(sprintf("Profided variable name='%s'  is invalid", variable))
+  }
+
+  profiles <- list()
+  observations[target_var
+               ] <- NULL #drop target to be consistent with model input
+  variable_seq <- seq(from = min(dataset[[variable]]),
+                      to = max(dataset[[variable]]),
+                      length.out = n_points)
+  
+  for(i in 1:NROW(observations)){
+    cp_dataset <- observations[rep(i, n_points),]
+    cp_dataset[[variable]] <- variable_seq
+    D_cp_dataset <- xgb.DMatrix(data = as.matrix(cp_dataset))
+    cp_profile <- predict(xgb_model, D_cp_dataset)
+    observation_name <- rownames(observations)[i]
+    profiles[[observation_name]] <- cp_profile 
+  }
+  
+  df_cp_profiles <- t(do.call(rbind, profiles))
+  
+  if(plot_cp){
+    matplot(y=df_cp_profiles,
+          x=result[[1]],
+          type="l",
+          xlab=variable,
+          ylab="Class 1 probability",
+          main="CP profiles")
+    if(add_marker){
+      N <- NROW(observations)
+      for(i in 1:N){
+        value <- observations[[variable]][i]
+        idx <- which.min(abs(variable_seq - value))[1]
+        value_ <- df_cp_profiles[idx, i]
+        color <- (i %% 10)
+        color <- ifelse(color==0, 10, color)
+        points(x=value, y=value_, col=color, pch=16)
+      }
+      legend("topright", legend=paste0("obs: ", row.names(observations)[1:min(c(10, N))]),  
+       fill = 1:min(c(10, N)))
+    }
+  }
+  return(list(variable_seq, df_cp_profiles, observations[[variable]]))
+}
+
+VARIABLE = "interests_correlate"
+result <- cp(model=xgb_model, 
+             dataset=test, 
+             observations=test, 
+             n_points=30, 
+             variable=VARIABLE,
+             plot_cp=FALSE)
+
+df_cp_profiles <- result[[2]]
+
+# Two non-standard plots - not implemented in `cp()` above
+matplot(y=df_cp_profiles,
+        x=result[[1]],
+        type="l",
+        xlab="interests_correlate",
+        ylab="Class 1 probability",
+        main="All CP profiles")
+
+plot(rowMeans(df_cp_profiles),
+      x=result[[1]],
+      type="l",
+      xlab="interests_correlate",
+      ylab="Class 1 probability",
+      main="Average of all CP profiles")
+```
+
+#### Slope coefficients of all CP profiles. Slope calculated with simple regression model
+
+```{r point_3, echo=ifelse(show_all, show_all, FALSE)}
+# Find two observations in the data set, such that they have different CP profiles. For example, model predictions are increasing with age for one observation and decreasing with age for another one. NOTE that you will need to have a model with interactions to observe such differences.
+
+df_cp_profiles <- cp(model=xgb, 
+                 dataset=test, 
+                 observations=test, 
+                 n_points=100, 
+                 variable="interests_correlate")[[2]]
+
+# coefs <- vector("numeric", length(df_cp_profiles))
+# i=1
+# for(y in df_cp_profiles){
+#   x = seq_along(y)
+#   beta = as.numeric(coef(lm(y~x))["x"])
+#   coefs[i] = beta
+#   i = i + 1
+# }
+
+coefs <- vector("numeric", 0) # empty vector
+for(i in 1:NCOL(df_cp_profiles)){
+  y = df_cp_profiles[,i]
+  x = seq_along(y)
+  beta = as.numeric(coef(lm(y~x))["x"]) # linear regression against x=1:N vector
+  coefs[i] = beta # append new element
+}
+
+plot(as.numeric(coefs), 
+     main="CP profiles slope coefficients",
+     ylab="Linear regression slope coef.",
+     xlab="Observation index")
+```
+
+#### Choosing two opposite profiles for interests_correlate
+
+#### One goes down, second is increasing, so there is some interaction between
+
+```{r point_3_result, echo=TRUE}
+wmax = (which.max(coefs))
+wmin = (which.min(coefs))
+
+result <- cp(model=xgb_model, 
+             dataset=test, 
+             observations=test[c(wmin, wmax),], 
+             n_points=30, 
+             variable="interests_correlate",
+             plot_cp=TRUE)
+```
+
+#### Checking `cp()` implemenation - DALEX creates same plot for obs. 1691 for 'interest_correlate' variable:
+
+```{r cp_dalex, echo=ifelse(show_all, show_all, FALSE)}
+library(DALEX)
+
+explainer <- DALEX::explain(model = xgb_model, data = as.matrix(test[,-NCOL(test)]), verbose = FALSE)
+
+# using 'variable=VARIABLE' in 'DALEX::predict_profile' does not lower number of subplots  
+cp_profile_dalex <- DALEX::predict_profile(explainer, as.matrix(test[wmin,-NCOL(test)]))
+
+plot(cp_profile_dalex)
+```
+
+```{r point_4_descriptio, echo=ifelse(show_all, show_all, FALSE)}
+# 4. Compare CP, which is a local explanation, with PDP, which is a global explanation. (implement PDP yourself for a potential bonus point)
+```
+
+#### Custom implementation of PDP and comparison with result of pdp::partial
+
+```{r point_4, echo=TRUE}
+
+#' Function generates Partial Dependence profiles for a given variable
+#' across a range of its values, keeping all other variables constant.
+#'
+#' @param model A trained model object compatible with the `predict` function.
+#' @param dataset A data.frame containing the dataset used to evaluate model.
+#' @param n_points Number of points to generate within the range of the variable. Default is 100.
+#' @param variable The name of the variable for which PDP is generated.
+#' @param target_var Binary target variable.
+#' @param outputmargin TRUE/FALSE - predict log-ods instead of probabilities.
+#' @return A data.frame containing the variable values and corresponding average predictions.
+pdp <- function(model, dataset, n_points=100, variable=NULL, target_var="TARGET", outputmargin=FALSE){
+  if(is.null(variable) || !(variable %in% names(dataset))){
+    stop(sprintf("Provided variable name='%s' is invalid", variable))
+  }
+
+  dataset[target_var] <- NULL # drop target to be consistent with model input
+  
+  variable_range <- seq(from = min(dataset[[variable]], na.rm = TRUE),
+                        to = max(dataset[[variable]], na.rm = TRUE),
+                        length.out = n_points)
+
+  avg_predictions <- numeric(n_points)
+
+  for(i in 1:n_points){
+    modified_dataset <- dataset
+    modified_dataset[[variable]] <- variable_range[i]
+    D_modified_dataset <- xgb.DMatrix(data = as.matrix(modified_dataset))
+    predictions <- predict(model, D_modified_dataset, outputmargin = outputmargin)
+    avg_predictions[i] <- mean(predictions)
+  }
+
+  return(data.frame(Variable = variable_range, Avg_Prediction = avg_predictions))
+}
+
+pdp_result <- pdp(model = xgb_model, dataset = test, variable = VARIABLE)
+
+plot(pdp_result, type="l", main=sprintf("Custom PDP for '%s' variable", VARIABLE))
+```
+
+#### Checking `pdp()` implementation by comparing with `pdp::partial` result, both are identical
+
+```{r test3, echo=ifelse(show_all, show_all, FALSE)}
+library(pdp)
+library(dplyr)
+
+predict_log_odds <- function(object, newdata) {
+  predict(object, newdata, outputmargin = FALSE)
+}
+
+pdp_result <- pdp::partial(xgb_model, pred.var = VARIABLE, 
+                      train = test[,1:(NCOL(test)-1)], 
+                      grid.resolution = 100,
+                      pred.fun = predict_log_odds)
+
+pdp_result <- dplyr::group_by(pdp_result, interests_correlate) %>%
+  summarise(yhat=mean(yhat))
+
+plot(x=pdp_result$interests_correlate, 
+     y=pdp_result$yhat, 
+     type="l", 
+     main=sprintf("PDP plot with pdp::partial for '%s'", VARIABLE))
+
+```
+
+#### DALEX implementation gives slightly different more smooth PDP plot:
+
+```{r dalex_xgb_pdp, echo=ifelse(show_all, show_all, FALSE)}
+explainer_xgb <- DALEX::explain(xgb_model, 
+                                data = as.matrix(test[,-NCOL(test)]), 
+                                y = test[[NCOL(test)]],
+                                verbose = FALSE)
+
+xgb_pdp_result_dalex <- DALEX::model_profile(explainer_xgb, variables = VARIABLE)
+
+plot(xgb_pdp_result_dalex)
+```
+
+```{r dalex_pdp2, echo=ifelse(show_all, show_all, FALSE)}
+# explainer <- explain(xgb_model, data = test[,-NCOL(test)])
+# 
+# # Generowanie PDP
+# pdp_result <- model_profile(explainer, variables = VARIABLE)
+# 
+# # Rysowanie wykresu
+# plot(pdp_result, type = "l", main = sprintf("PDP plot with DALEX for '%s'", VARIABLE))
+
+```
+
+#### Same for `ALEPlot::PDPlot` but `Y` variable is somehow shifted:
+
+```{r ALEPlot_PDPlot, echo=ifelse(show_all, show_all, FALSE)}
+predict_log_odds <- function(X.model, newdata) {
+  predict(X.model, newdata, outputmargin = FALSE)
+}
+
+pdp_result <- ALEPlot::PDPlot(X.model = xgb_model, 
+                              X = as.matrix(test[,-NCOL(test)]), 
+                              J = VARIABLE, K=100,
+                              pred.fun = predict_log_odds)
+```
+
+### Overall CP and PDP profiles are different and there is high variability of CP profiles between different observations. Average of all CP profiles is almost identical to custom and other packages' PDP implementations, which is another check of correctness. PDP profile is U-shaped which indicates that people with similar and disimilar interests match more often, that is 'opposites attract'. It is interesting which variable interaction brings this effect.
+
+## PDP for three models
+### Random forest:
+
+```{r comparison, echo=ifelse(show_all, show_all, FALSE)}
+# 5.Compare PDP between between at least two different models.
+library(randomForest)
+
+rf <- randomForest(formula=as.factor(TARGET)~., data=train, ntree=1000)
+rf_explainer <- DALEX::explain(rf, 
+                               data = (test[,-NCOL(test)]), 
+                               y = test[[NCOL(test)]], 
+                               verbose=FALSE)
+
+plot(tmp <- DALEX::model_profile(rf_explainer, variables = VARIABLE))
+```
+
+#### `DALEX` PDP plot for `lightgbm` and confusion table which is almost identical to xgboost table
+
+```{r lightgbm, echo=ifelse(show_all, show_all, FALSE)}
+# Wczytanie pakietu lightgbm
+library(lightgbm)
+
+# Konwersja danych do formatu lightgbm
+dtrain <- lgb.Dataset(data = as.matrix(train[,1:(NCOL(train)-1)]), 
+                      label = train$TARGET)
+dtest <- lgb.Dataset(data = as.matrix(test[,1:(NCOL(test)-1)]), 
+                     label = test$TARGET)
+
+# Parametry modelu
+params <- list(
+  objective = "binary",
+  boosting = "gbdt",
+  learning_rate = 0.3,
+  max_depth = 6
+)
+
+# Trenowanie modelu
+lgb_model <- lgb.train(
+  params = params,
+  data = dtrain,
+  nrounds = 100,
+  verbose = -1
+)
+
+predictions <- predict(lgb_model, as.matrix(test[,1:(NCOL(test)-1)]))
+
+predictions_binary <- ifelse(predictions > 0.5, 1, 0)
+df_predictions <- data.frame(id = rownames(test), predictions, predictions_binary, TARGET = test$TARGET)
+```
+```{r pred_table_lgbm}
+table(predictions_binary, test$TARGET)
+
+```
+
+```{r lightgbm_pdp, echo=ifelse(show_all, show_all, FALSE)}
+lgb_model_explainer <- DALEX::explain(lgb_model, 
+                               data = as.matrix(test[,-NCOL(test)]), 
+                               y = test[[NCOL(test)]],
+                               verbose=FALSE, label="LGBM")
+
+plot(tmp <- DALEX::model_profile(lgb_model_explainer, variables = VARIABLE))
+
+```
+
+#### Plot for xgboost model again
+
+```{r xgb_again, echo=ifelse(show_all, show_all, FALSE)}
+plot(xgb_pdp_result_dalex)
+
+```
+
+### Comment
+#### PDP for random forest is much more smooth, rf consists of 1000 trees, xgb and lgbm consists of 100 tree it may be reason of higher rf smoothness.
