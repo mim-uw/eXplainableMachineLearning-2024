@@ -1,0 +1,177 @@
+---
+title: "Evaluation of explanations"
+subtitle: "Explainable Machine Learning, Machine Learning @ MIMUW 2023"
+author: "Hubert Baniecki"
+date: "2023-11-24"
+format:
+  revealjs: 
+    theme: [default]
+    slide-number: true
+    touch: true
+    scrollable: true
+    chalkboard: 
+      buttons: false
+    logo: images/XAI.png
+    footer: xML -- Evaluation of explanations -- MIM UW -- 2023
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, out.width="70%", fig.width = 8, fig.height = 5.5)
+```
+
+# ~~Paper~~ Software of the day
+
+```{css, echo=FALSE}
+.reveal {
+  font-size: 24px;
+  line-height: 1.6!important;
+}
+code {
+  font-size: 18px!important;
+  line-height: 1.2!important;
+}
+pre {
+  line-height: 1.2!important;
+}
+```
+
+## Quantus (v2023)
+
+::: {.incremental}
+
+- Today we will talk about **Quantus**: a Python package implementing 20+ evaluation measures for explanations specific to neural networks (PyTorch and TensorFlow).
+- It was introduced in [Quantus: An Explainable AI Toolkit for Responsible Evaluation of Neural Network Explanations and Beyond](https://jmlr.org/papers/v24/22-0142.html) by Anna Hedström, Leander Weber, Dilyara Bareeva, Franz Motzkus, Wojciech Samek, Sebastian Lapuschkin, Marina M.-C. Höhne in JMLR (2022).
+- Since 2022, the project gathered 69 citations and 400+ stars on GitHub.
+
+:::
+
+. . .
+
+<p><center><img src="images/evaluation_abstract.png" width="95%"/></center></p>
+
+---
+
+**Quantus** solves an emerging challenge of evaluating and benchmarking explanations in practice; it has high potential to become widely adopted as SOTA.
+
+<p><img src="images/evaluation_author1.png" width="100%"/></p>
+
+<p><img src="images/evaluation_author2.png" width="100%"/></p>
+
+# Quantus: general overview and intuition
+
+## Framework
+
+**Input**: model $f$, observation $x$, feature attribution map $g(x)$
+
+. . .
+
+**Output**: a number measuring how good is $g(x)$ 
+
+. . .
+
+**Problem**: No ground truth explanation to compare with (like in supervised learning)
+
+**How to measure the quality?**
+
+. . .
+
+**Answer** lays in many research publications on the topic
+
+<p><center><img src="images/evaluation_abstract2.png" width="90%"/></center></p>
+
+## Benchmarking feature attributions
+
+<p style="text-align:center;"><img src="images/evaluation_1.png" width="85%"/></p>
+
+[https://github.com/understandable-machine-intelligence-lab/Quantus](https://github.com/understandable-machine-intelligence-lab/Quantus)
+
+
+## Notions of explainability and implemented measures [1/3]
+
+**1. Axiomatic**
+
+As name suggests, assesses if explanations fulfill certain axiomatic properties.
+
+::: {.incremental}
+- In the last lecture, we mentioned the **Completeness** axiom, which can be easily checked for a given feature attribution.
+- Another example is **Input Invariance**, which first assumes that the model is invariant to a constant shift in input, and then measures if the explanations are invariant too. <p style="text-align:center;"><img src="images/evaluation_2.png" width="66%"/></p>
+:::
+
+## Notions of explainability and implemented measures [2/3]
+
+**2. Faithfulness**
+
+Quantifies to what extent explanations follow the predictive behaviour of the model; checking if more important features play a larger role in model predictions.
+
+::: {.incremental}
+- **Faithfulness Estimate** computes the correlation between feature attributions and the change in prediction after their removal.
+- **Pixel Flipping**/**Region Perturbation** captures the impact of perturbing pixels (superpixels, regions) in descending order according to the attributed value on the prediction.
+- **Sufficiency** measures the extent to which similar explanations have the same prediction label.
+:::
+
+. . .
+
+**3. Robustness**
+
+Quantifies to what extent explanations are stable when subject to slight perturbations of the input, **assuming that model output approximately stayed the same**.
+
+::: {.incremental}
+- Note that if the **latter** would not be the case, it is be a good thing, e.g. detecting adversarial examples!
+- **Max-Sensitivity** and **Avg-Sensitivity** measure the maximum and average sensitivity of an explanation using a Monte Carlo sampling-based approximation. 
+:::
+
+## Notions of explainability and implemented measures [3/3]
+
+**4. Complexity**
+
+Captures to what extent explanations are small meaning that only a few features are enough to explain a prediction.
+
+::: {.incremental}
+- **Effective Complexity** measures how many attributions in absolute values are exceeding a certain threshold.
+- **Sparseness** uses the Gini Index for measuring, if only highly attributed features are truly predictive of the model output.
+:::
+
+. . .
+
+**5. Randomisation**
+
+Model and data randomisation tests proposed in [Sanity Checks for Saliency Maps](https://arxiv.org/abs/1810.03292) by Julius Adebayo, Justin Gilmer, Michael Muelly, Ian Goodfellow, Moritz Hardt and Been Kim.
+
+## {-}
+
+<p style="text-align:center;"><img src="images/evaluation_towards.png" width="88%"/></p>
+
+
+# Sanity Checks for Saliency Maps
+
+---
+
+<p style="text-align:center;"><img src="images/evaluation_3.png" width="80%"/></p>
+
+## Model randomisation test from [Adebayo et al. (2018)](https://arxiv.org/abs/1810.03292)
+
+<p style="text-align:center;"><img src="images/evaluation_4.png" width="90%"/></p>
+
+## Data randomisation test from [Adebayo et al. (2018)](https://arxiv.org/abs/1810.03292)
+
+<p style="text-align:center;"><img src="images/evaluation_5.png" width="86%"/></p>
+
+
+# Take-home message
+
+::: {.incremental}
+
+1. Evaluating explanations is challenging -- think it through, especially for **high-stakes** decision making and **critical** predictions.
+2. Various methods have been proposed to evaluate explanations, and specifically for neural networks they are implement in **Quantus**.
+3. **There is no one measure to rule them all**. Always consider a use-case and desirable properties.
+
+:::
+
+# Materials
+
+- For more information on evaluating explanations, refer to a survey [Notions of explainability and evaluation approaches for explainable artificial intelligence](https://doi.org/10.1016/j.inffus.2021.05.009) by Giulia Vilone and Luca Longo.
+- Tutorials are available at [Quantus: A toolkit to evaluate neural network explanations](https://github.com/understandable-machine-intelligence-lab/Quantus).
+
+# Next
+
+<p style="text-align:center;"><img src="images/evaluation_advxai.png" width="83%"/></p>
