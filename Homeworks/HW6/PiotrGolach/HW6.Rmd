@@ -9,7 +9,7 @@ suppressWarnings(library(DALEX, quietly = T))
 suppressWarnings(library(xgboost, quietly=TRUE))
 suppressWarnings(library(randomForest, quietly = TRUE))
 suppressWarnings(library(ggplot2, quietly = T))
-
+suppressWarnings(library(dplyr, quietly = T))
 ```
 
 ### Confusion table for xgboost
@@ -182,7 +182,7 @@ plot(importance_scores_xgb)
 * Overall order of variable is the same as for PVI
 * Again top 5 most important variables are the same
 * Weak predictors have assigned higher values of importance bacause Gini based importance is correlated with frequency of variable usage in model then the lower *mtry* value is the higher are importance scores for weak predictors (this effect is only visible for mtry=1 model versus the rest as max importance is visibly lower in this)
-* "I do not see the influence of the number of levels in variables on the results of variable importance based on Gini impurity (table at the bottom), almost all variables have about 20 levels (*interests_correlate* with 132 levels is continuous variable)
+* "I do not see the influence of the number of levels in variables on the results of variable importance based on Gini impurity (table at the bottom of report), almost all variables have about 20 levels (*interests_correlate* with 132 levels is continuous variable)
 
 
 ```{r xgb_feature_importances_, echo=FALSE}
@@ -208,6 +208,81 @@ explainers <- mapply(function(x, label){
 
 ```
 
+### `DALEX` and `iml` does not posses implementation of Shapley values for whole dataset. Below is my try to solve this
+
+```{r shap_for_xgb}
+for(i in seq(NROW(train))){
+  if((i %% 10)==0){
+    # print(sprintf("Iteration %s", i))
+    if(i > 100){
+      break
+    }
+  }
+  new_obs <- as.matrix(train[i, 1:(NCOL(train)-1)]) # i-th observation
+  shap <- predict_parts(explainer, type = "shap", new_observation=new_obs)
+  shap_mean_ <- data.frame(shap) %>%
+    group_by(variable_name) %>%
+    summarise(mean_contribution = mean(abs(contribution), na.rm = TRUE)) %>% # abs
+    arrange(variable_name)
+  shap_mean_$mean_contribution = abs(shap_mean_$mean_contribution)
+  if(i==1){
+    shap_mean = shap_mean_
+  }else{
+    shap_mean$mean_contribution = shap_mean$mean_contribution + shap_mean_$mean_contribution
+  }
+}
+shap_mean$mean_contribution = shap_mean$mean_contribution / i
+shap_mean <- shap_mean %>%
+  arrange(desc(mean_contribution))
+
+ggplot(shap_mean, aes(x = reorder(variable_name, mean_contribution), 
+                      y = mean_contribution)) +
+  geom_bar(stat = "identity", aes(fill = mean_contribution)) +
+  coord_flip() + 
+  ggtitle("Custom calculated abs SHAP obs in train") + 
+  labs(x = "Variable", y = "mean abs SHAP value") +
+  theme_minimal() +
+  scale_fill_gradient(low = "blue", high = "red")
+```
+
+* Results given by SHAP and Gini impurity based feature importance (below) are similar - top two variables are the same, third and forth are flipped. In case of SHAP explanation `like` variable seems to be more important
+* I've supposed that`like` is more or less correlated then rest of variables but Spearman correlation shows average level of `like` variable with top and mean correlation with rest of variables. 
+
+```{r FI_GI_plot_again}
+ggplot(data = importance_scores) +
+  geom_bar(aes(x = Gain, y = reorder(Feature, Gain)), stat = "identity") +
+  labs(title = "Feature Importance (Gini impurity) for XGBoost") +
+  theme_minimal()
+```
+
+* correlation of `like` with other variables are not different then between other variables
+
+```{r}
+vars_ =  c("like", "attractive_o", "interests_correlate", "shared_interests_o")
+print(cor(train[vars_], method = "spearman") %>% round(2))
+```
+```{r}
+
+cor(train, method = "spearman") %>% 
+  data.frame -> df_cor
+df_cor %>%
+  abs %>% 
+  rowMeans() %>% 
+  round(2) %>% 
+  sort %>% 
+  data.frame(absolute_mean_spearman=.) -> df
+
+print(df, quote = FALSE, row.names = T)
+```
+
+* correlation of `like` is high but not much higher then `attractive_o`
+
+```{r}
+df_cor["TARGET"] %>% round(2) -> df_cor
+names(df_cor)[0] <- "correlation with TARGET var"
+print(df_cor)
+```
+
 ### Number of levels in each variable
 
 ```{r table}
@@ -217,44 +292,4 @@ for(name in names(train)){
 }
 ```
 
-<!-- ```{r train_rf} -->
 
-<!-- rf_mtry2 <- randomForest(formula=as.factor(TARGET)~.,  -->
-
-<!--                          data=train,  -->
-
-<!--                          ntree=1000,  -->
-
-<!--                          mtry=2) -->
-
-<!-- ``` -->
-
-<!-- ```{r calc_vip} -->
-
-<!-- # 1.Calculate Permutation-based Variable Importance for the selected model. -->
-
-<!-- importance_matrix <- xgb.importance( -->
-
-<!--   feature_names = colnames(train[,1:(NCOL(train)-1)]), -->
-
-<!--   model = xgb_model) -->
-
-<!-- # # Wyświetlenie ważności cech -->
-
-<!-- # print(importance_matrix) -->
-
-<!-- xgb.plot.importance(importance_matrix, main="xgb model Permutation Variable Importance") -->
-
-<!-- randomForest::varImpPlot(rf_mtry2) -->
-
-<!-- ``` -->
-
-<!-- ```{r point_3} -->
-
-<!-- # 3. For the tree-based model from (1), compare PVI with: -->
-
-<!-- # A) the traditional feature importance measures for trees: Gini impurity etc.; what is implemented in a given library: see e.g. the feature_importances_ attribute in xgboost and sklearn. -->
-
-<!-- # B) [in Python] SHAP variable importance based on the TreeSHAP algorithm available in the shap package. -->
-
-<!-- ``` -->
