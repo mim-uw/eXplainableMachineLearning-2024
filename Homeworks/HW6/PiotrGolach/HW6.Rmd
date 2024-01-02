@@ -1,0 +1,295 @@
+---
+title: "HW6"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+suppressWarnings(library(DALEX, quietly = T))
+suppressWarnings(library(xgboost, quietly=TRUE))
+suppressWarnings(library(randomForest, quietly = TRUE))
+suppressWarnings(library(ggplot2, quietly = T))
+suppressWarnings(library(dplyr, quietly = T))
+```
+
+### Confusion table for xgboost
+
+```{r point_0, echo=FALSE}
+# 0. For the selected data set, train at least one tree-based ensemble model, e.g. random forest, gbdt, xgboost.
+
+setwd("C:/Projects/MIMUW/xai/fork/eXplainableMachineLearning-2024/Homeworks/HW5")
+
+dataset = "SpeedDating.csv"
+repo_url = "https://raw.githubusercontent.com/adrianstando/imbalanced-benchmarking-set/main/datasets/"
+
+if(!file.exists(dataset)){
+  data <- read.csv(paste0(repo_url, dataset), row.names="X")
+  write.csv(x=data, file=dataset)
+}else{
+  data <- read.csv(dataset, row.names="X")
+}
+
+### train xgb
+set.seed(42)
+
+data <- data[sample(1:NROW(data)),]
+train <- data[1:800,]
+test <- data[801:NROW(data),]
+
+# convert to DMatix object
+
+dtrain <- xgb.DMatrix(data = as.matrix(train)[,1:(NCOL(train)-1)], 
+                      label = train$TARGET)
+dtest <- xgb.DMatrix(data = as.matrix(test)[,1:(NCOL(test)-1)], 
+                     label = test$TARGET)
+
+params <- list(
+  booster = "gbtree",
+  objective = "binary:logistic",
+  eta = 0.3,
+  max_depth = 6
+)
+
+xgb_model <- xgb.train(
+  params = params,
+  data = dtrain,
+  nrounds = 100,
+  verbose=2
+)
+
+# Calculate the predictions for some selected observations.
+predictions <- predict(xgb_model, dtest)
+
+predictions_binary <- ifelse(predictions > 0.5, 1, 0)
+table(predictions_binary, test$TARGET)
+# df_predictions <- data.frame(id=rownames(test), predictions, predictions_binary, TARGET=test$TARGET)
+# 
+# print(head(df_predictions, 2))
+```
+
+### 1 Permutation-based Variable Importance for xgboost
+
+```{r, vip_xgb, echo=FALSE}
+explainer <- DALEX::explain(model = xgb_model,
+                     data = as.matrix(train)[,1:(NCOL(train)-1)],
+                     label = "XGBoost Model",
+                     y = train$TARGET, 
+                     verbose=0,
+                     type="classification")
+
+importance_scores_xgb <- DALEX::model_parts(explainer)
+plot(importance_scores_xgb)
+
+```
+
+### Four different random forest models
+
+```{r, rfs, echo=FALSE}
+# 2.Train three more candidate models (different variable transformations, different model architectures, hyperparameters) and compare their rankings of important features using PVI. What are the differences? Why?
+
+rf_mtry2 <- randomForest(formula=as.factor(TARGET)~., 
+                         data=train, 
+                         ntree=1000, 
+                         mtry=2)
+
+rf_mtry3 <- randomForest(formula=as.factor(TARGET)~., 
+                         data=train, 
+                         ntree=1000, 
+                         mtry=3) # instead of 2
+
+rf_nodesize2 <- randomForest(formula=as.factor(TARGET)~., 
+                             data=train, 
+                             ntree=1000, 
+                             mtry=3, 
+                             nodesize=2) # default is unrestricted
+
+rf_mtry1 <- randomForest(formula=as.factor(TARGET)~., 
+                             data=train, 
+                             ntree=1000, 
+                             mtry=1, nodesize=5) # default is unrestricted
+
+rfs <- list(rf_mtry2, rf_mtry3, rf_nodesize2, rf_mtry1)
+
+oob_err_mtry2 <- rf_mtry2$err.rate[nrow(rf_mtry2$err.rate), "OOB"]
+names(oob_err_mtry2) <- "oob_err model mtry=2"
+
+oob_err_mtry3 <- rf_mtry3$err.rate[nrow(rf_mtry3$err.rate), "OOB"]
+names(oob_err_mtry3) = "oob_err model mtry=3"
+
+oob_err_nodesize2 <- rf_nodesize2$err.rate[nrow(rf_nodesize2$err.rate), "OOB"]
+names(oob_err_nodesize2) = "oob_err model mtry=3 nodesize=2"
+
+oob_err_mtry1 <- rf_mtry1$err.rate[nrow(rf_mtry1$err.rate), "OOB"]
+names(oob_err_mtry1) = "oob_err model mtry=1"
+
+results_rf <- c(oob_err_mtry2, oob_err_mtry3, oob_err_nodesize2, oob_err_mtry1)
+```
+
+### OOB errors for four RF models
+
+* *mtry* - number of variables to choose from each split in node (same variables for all nodes in given tree), larger increase overfitting as variable for split is choosen in greedy way, defaults to sqrt of number of columns for classification
+
+* *nodesize* - max number of obs. per final node, larger increase regularization, defaults to 5 for classification
+
+```{r oob_rf}
+print(data.frame(results_rf ))
+```
+
+### Four explainers fo RFs - permutation based errors
+
+```{r VPI_for_rfs}
+create_explainer <- function(model, label){
+  DALEX::explain(model = model,
+  data = as.matrix(train)[,1:(NCOL(train)-1)],
+  label = label,
+  y = train$TARGET, 
+  verbose=0)
+  }
+
+rf_model_labels <- c("model mtry=2", "model mtry=4",
+                       "model mtry=3 nodesize=2", 
+                       "model mtry=1 nodesize=5")
+
+explainers <- mapply(function(x, y) create_explainer(x, y), 
+                     rfs, 
+                     rf_model_labels,
+                     SIMPLIFY=FALSE
+                   )
+
+rf_importance_scores <- lapply(
+  explainers, 
+  function(model)DALEX::model_parts(model)
+)
+```
+
+```{r rf_VPI_plots}
+lapply(rf_importance_scores, plot)
+```
+
+* Increasing mtry from 2 to 4 increases 1-AUC but does not change order of variables importance because more important variable are more often in use
+* Lowering mtry to 3 from 4 and setting nodesize to 2, which is lower then default 5, keeps plot unchanged, it seems that lowering nodesize conteract to lowering mtry - order of most important variables is unchanged
+* On last RF plot mtry=1 competition between variables during spilts in nodes
+is switched-off it lowes dependence of final model from most important variable
+as they are less frequently choosen, the result is increase in importance of previously less important variable
+* Below PVI for XGBoost, similar to RF with mtry=3 despite the fact that trees in xgboost are dependent (`n`-th tree depends on output of `n-1` tree) I was supposing that weak predictors would have higher overall importance because they could by chance randomly incorporated in previous tree then by permuting them we would impact consecutive trees - but it is not the case
+
+```{r xgb_PVI, echo=FALSE}
+plot(importance_scores_xgb)
+
+```
+### Gini impurity based results
+
+* Overall order of variable is the same as for PVI
+* Again top 5 most important variables are the same
+* Weak predictors have assigned higher values of importance bacause Gini based importance is correlated with frequency of variable usage in model then the lower *mtry* value is the higher are importance scores for weak predictors (this effect is only visible for mtry=1 model versus the rest as max importance is visibly lower in this)
+* "I do not see the influence of the number of levels in variables on the results of variable importance based on Gini impurity (table at the bottom of report), almost all variables have about 20 levels (*interests_correlate* with 132 levels is continuous variable)
+
+
+```{r xgb_feature_importances_, echo=FALSE}
+importance_scores <- xgb.importance(model = xgb_model)
+
+ggplot(data = importance_scores) +
+  geom_bar(aes(x = Gain, y = reorder(Feature, Gain)), stat = "identity") +
+  labs(title = "Feature Importance (Gini impurity) for XGBoost") +
+  theme_minimal()
+
+
+```
+
+
+```{r gini_var_ipm}
+explainers <- mapply(function(x, label){ 
+    varImpPlot(x, main=paste0("Random forest ", label))
+  }, 
+                     rfs, 
+                     rf_model_labels,
+                     SIMPLIFY=FALSE
+                   )
+
+```
+
+### `DALEX` and `iml` does not posses implementation of Shapley values for whole dataset. Below is my try to solve this
+
+```{r shap_for_xgb}
+for(i in seq(NROW(train))){
+  if((i %% 10)==0){
+    # print(sprintf("Iteration %s", i))
+    if(i > 100){
+      break
+    }
+  }
+  new_obs <- as.matrix(train[i, 1:(NCOL(train)-1)]) # i-th observation
+  shap <- predict_parts(explainer, type = "shap", new_observation=new_obs)
+  shap_mean_ <- data.frame(shap) %>%
+    group_by(variable_name) %>%
+    summarise(mean_contribution = mean(abs(contribution), na.rm = TRUE)) %>% # abs
+    arrange(variable_name)
+  shap_mean_$mean_contribution = abs(shap_mean_$mean_contribution)
+  if(i==1){
+    shap_mean = shap_mean_
+  }else{
+    shap_mean$mean_contribution = shap_mean$mean_contribution + shap_mean_$mean_contribution
+  }
+}
+shap_mean$mean_contribution = shap_mean$mean_contribution / i
+shap_mean <- shap_mean %>%
+  arrange(desc(mean_contribution))
+
+ggplot(shap_mean, aes(x = reorder(variable_name, mean_contribution), 
+                      y = mean_contribution)) +
+  geom_bar(stat = "identity", aes(fill = mean_contribution)) +
+  coord_flip() + 
+  ggtitle("Custom calculated abs SHAP obs in train") + 
+  labs(x = "Variable", y = "mean abs SHAP value") +
+  theme_minimal() +
+  scale_fill_gradient(low = "blue", high = "red")
+```
+
+* Results given by SHAP and Gini impurity based feature importance (below) are similar - top two variables are the same, third and forth are flipped. In case of SHAP explanation `like` variable seems to be more important
+* I've supposed that`like` is more or less correlated then rest of variables but Spearman correlation shows average level of `like` variable with top and mean correlation with rest of variables. 
+
+```{r FI_GI_plot_again}
+ggplot(data = importance_scores) +
+  geom_bar(aes(x = Gain, y = reorder(Feature, Gain)), stat = "identity") +
+  labs(title = "Feature Importance (Gini impurity) for XGBoost") +
+  theme_minimal()
+```
+
+* correlation of `like` with other variables are not different then between other variables
+
+```{r}
+vars_ =  c("like", "attractive_o", "interests_correlate", "shared_interests_o")
+print(cor(train[vars_], method = "spearman") %>% round(2))
+```
+```{r}
+
+cor(train, method = "spearman") %>% 
+  data.frame -> df_cor
+df_cor %>%
+  abs %>% 
+  rowMeans() %>% 
+  round(2) %>% 
+  sort %>% 
+  data.frame(absolute_mean_spearman=.) -> df
+
+print(df, quote = FALSE, row.names = T)
+```
+
+* correlation of `like` is high but not much higher then `attractive_o`
+
+```{r}
+df_cor["TARGET"] %>% round(2) -> df_cor
+names(df_cor)[0] <- "correlation with TARGET var"
+print(df_cor)
+```
+
+### Number of levels in each variable
+
+```{r table}
+for(name in names(train)){
+  value <- nlevels(factor(train[[name]]))
+  print(c(name, value))
+}
+```
+
+
