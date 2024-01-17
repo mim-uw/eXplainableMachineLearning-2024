@@ -22,7 +22,7 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 * 2023-12-08  --  PROJECT: **Second checkpoint** (remote video)
 * 2023-12-15  --  Adversarial XAI
 * 2024-01-12  --  Student presentations	of research papers
-* 2024-01-19  --  TBA, prof. Wojciech Samek
+* 2024-01-19  --  XAI-Based Model Debugging, prof. Wojciech Samek
 * 2024-01-26  --  PROJECT: **Final presentation** (in-person presentations)
 
 ## How to get a good grade
