@@ -30,7 +30,7 @@ Plan for the winter semester 2023/2024. MIM_UW classes are on Fridays.
 The final grade is based on activity in four areas:
 
 * mandatory: Project (0-35)
-* mandatory: Exam  (0-35)
+* mandatory: Exam  (0-30)
 * optional: Homeworks (0-24)
 * optional: Presentation (0-10)
 
